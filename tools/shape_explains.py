@@ -90,8 +90,21 @@ def pick_conclusion(sents, a):
 
 
 def attribute(sents):
+    """把『…,B选项正确,A选项错误』这类句子按评语位置切开，分别挂到各自的选项上。"""
     got = {}
+    MARK = re.compile(r"(?<![A-Za-z])([A-D])\s*(?:选项|项)?\s*(?:正确|错误|当选|不选|对|错)(?![一-龥])")
     for s in sents:
+        marks = list(MARK.finditer(s))
+        if marks:
+            prev = 0
+            for m in marks:
+                seg = s[prev:m.start()].strip(" ,，。；")
+                prev = m.end()
+                seg = re.sub(r"^\s*(?:选项)?[A-D](?:选项|项)?\s*[、,，：:]?\s*", "", seg).strip(" ,，。；")
+                if (len(seg) >= 8 and not re.match(r"^(都|均|皆|全|只有|选项)", seg)
+                        and not re.fullmatch(r"(正确|错误|当选|不选|对|错)", seg)):
+                    got.setdefault(m.group(1), seg)
+            continue
         m = LEAD.match(s)
         if m:
             letters = re.findall(r"[A-D]", m.group(1))
@@ -175,6 +188,7 @@ def clause_split(t):
 VERBISH = re.compile(r"(不|是|为|属于|构成|应当|可以|不得|无效|有效|优先|没有|须|需|按|依|即|指)")
 BADDOT = re.compile(r"^(选项|都|均|皆|全|只有)")
 GOODEND = re.compile(r"(罪|行为|顺序|原则|规定|权利|义务|责任|效力|有效|无效|成立|不成立|优先受偿|约束力|期限|范围)$")
+STRONG = re.compile(r"((?:不)?构成[^，。；]{0,14}罪|符合[^，。；]{0,20}罪|罪的构成要件|优先受偿|无效|不成立|可以|不得)")
 VERD = re.compile(r"(构成[^，。；]{0,14}罪|不构成[^，。；]{0,10}罪|优先受偿|无效|有效|成立|不成立|应当|不得|不予|属于|不属于|按|按照)")
 FILLER = re.compile(r"^(可见|本题中|本案中|因此|所以|故|但是|但|而|并|且|则|据此|综上|另|此外)[,，]?\s*")
 
@@ -194,8 +208,12 @@ def gist(body, option_text, limit=22):
         return t[:limit]
     opt = re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]", "", option_text or "")
     pick = None
-    for c in cls:                                   # 先找带结论词的短句
-        if VERD.search(c) and len(c) <= limit + 2:
+    for c in cls:                                   # 首选“构成/不构成…罪、优先受偿、无效”这类硬结论
+        if STRONG.search(c) and len(c) <= limit + 6:
+            pick = c
+            break
+    for c in cls:                                   # 再找带结论词的短句
+        if not pick and VERD.search(c) and len(c) <= limit + 2:
             pick = c
             break
     if not pick and opt:                            # 再找命中选项关键词的短句
@@ -245,6 +263,13 @@ def shape(ans, options):
         body = per.get(L)
         if not body and options:
             body = phrase_reason(options.get(L, ""), text)
+            # 错项的理由必须是否定性的，否则多半是在讲正确项，宁可不挂
+            if body and L not in a and not re.search(r"(不|非|并非|而非|不是|错误|排除|无关|不符)", body) \
+                    and not re.search(rf"{L}\s*(?:选项|项)", body):
+                body = ""
+        NEG = re.compile(r"(不构成|不是|不属于|并非|而非|没有|并未|排除|错误|不符|不能|不得|不应该)")
+        if body and L not in a and not NEG.search(body) and not re.search(rf"{L}\s*(?:选项|项)", body):
+            body = ""                     # 讲的是别项/正确项，不硬挂
         if body and gist(body, None) in seen_body:      # 同一个理由不重复挂在多个选项下
             body = ""
         if body:
