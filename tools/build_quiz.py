@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""把 tagged.json + answers.json 生成为单文件刷题页 刷题/法硕基础课-真题刷题.html。
+"""把 tagged.json + answers.json 生成为单文件刷题页 quiz.html。
 
 用法：
     python3 tools/build_quiz.py                 # 要求答案全覆盖
@@ -15,7 +15,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SHELL = os.path.join(ROOT, "刷题", "_shell.html")
-OUT = os.path.join(ROOT, "刷题", "法硕基础课-真题刷题.html")
+OUT = os.path.join(ROOT, "quiz.html")
 TAGGED = os.path.join(ROOT, "data", "tagged.json")
 ANSWERS = os.path.join(ROOT, "data", "answers.json")
 
