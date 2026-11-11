@@ -163,14 +163,14 @@ def main():
             letters, m = find_answer(body, qtype)
             if not letters:
                 if num in speed:
-                    out[f"{year}-{num}"] = {"a": speed[num], "e": strip_marks(body, None)[:1200]}
+                    out[f"{year}-{num}"] = {"a": speed[num], "e": strip_marks(body, None)[:4000]}
                     continue
                 miss += 1
                 continue
             ok += 1
             key = f"{year}-{num}"
             expl = strip_marks(body, m)
-            out[key] = {"a": letters, "e": expl[:1200]}
+            out[key] = {"a": letters, "e": expl[:4000]}
         report[year] = (ok, len(expect[year]), miss)
 
     # 人工补录（OCR 表格/粘连行）优先

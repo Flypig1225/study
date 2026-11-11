@@ -45,11 +45,17 @@ header h1{font-size:19px;margin:0;flex:1}
 .stem{font-size:18px;margin:10px 0 14px;line-height:1.7}
 .opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:9px;font-size:16.5px;cursor:pointer;color:var(--ink)}
 .opt .L{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid #c9c9c6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
-.opt.sel{border-color:var(--acc)}
+.opt.sel{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+.subbar{margin:18px 0 4px}
+.subbar .btn{width:100%}
+.oe.yes{color:#166b41}
+.oe.no{color:#a8382f}
 .opt>span:nth-child(2){flex:1;min-width:0}
-.oe{display:block;margin-top:5px;font-size:14.5px;line-height:1.6;color:#55555a}
+.oe{display:block;margin-top:6px;font-size:13.5px;line-height:1.5;color:#6a6a70;font-weight:400}
 .oe b{color:var(--ink)}
-@media (max-width:899px){.oe{font-size:13.5px}}
+@media (max-width:899px){.oe{font-size:13px}}
+.hl{color:#c0392b;font-weight:700}
+.xsec{font-weight:600;color:var(--ink);margin:10px 0 2px;font-size:14.5px}
 .opt.sel .L{background:var(--acc);border-color:var(--acc);color:#fff}
 .opt.ok{border-color:var(--ok);background:var(--okbg)}
 .opt.ok .L{background:var(--ok);border-color:var(--ok);color:#fff}
@@ -148,11 +154,12 @@ function nextNew(unitOnly){
 let view={name:'home'};let sess=null;
 const $=h=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>');
+function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<b class="hl">').replace(/\x04/g,'</b>');
   let h0=t.split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>{let m=x.match(/^([A-E])([✓✗])\s*([\s\S]*)$/);
     if(m&&skipOpt)return '';
     if(m)return `<div class="xo ${m[2]=='✓'?'ok':'no'}${mk[m[1]]?(mk[m[1]]=='漏选'?' hit miss':' hit'):''}"><span class="xk">${m[1]}</span><span class="xt">${m[3]}</span>${mk[m[1]]=='漏选'?`<span class="xg">漏选</span>`:''}</div>`;
     m=x.match(/^记法[:：]\s*([\s\S]*)$/);if(m)return `<div class="xm"><span class="xl">记法</span>${m[1]}</div>`;
+    if(/^【[^】]{1,8}】$/.test(x))return `<div class="xsec">${x.replace(/[【】]/g,'')}</div>`;
     return `<div class="xp">${x}</div>`;});h0=[...h0.filter(x=>x.startsWith('<div class="xm"')),...h0.filter(x=>!x.startsWith('<div class="xm"'))].join('');const XM=/(<div class="xm"><span class="xl">记法<\/span>(?:(?!<\/div>)[\s\S])*)<\/div>(?=<div class="xm"><span class="xl">记法<\/span>)<div class="xm"><span class="xl">记法<\/span>/g;let pv;do{pv=h0;h0=h0.replace(XM,'$1<br>');}while(h0!==pv);return h0;}
 function home(keepScroll){
   view={name:'home'};const app=document.getElementById('app');
@@ -167,7 +174,7 @@ function home(keepScroll){
   <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
   <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题本（${wr} 题）</button></div>`;
   h+=`<div class="card"><div id="ul"></div></div>`;
-  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div><div style="margin-top:6px">__COVERAGE__</div>
+  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br><b>解析来源</b>：各年公开真题资料（含培训机构解析），已按现行法校对法条名称，旧法条另附「法条时效」提示；2023、2024 两年官方未公布解析，只有答案与考点，看题时以考点为准。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div><div style="margin-top:6px">__COVERAGE__</div>
   <div class="foot" style="margin-top:10px"><button id="rst">清空全部进度</button></div></div></div>`;
   app.innerHTML=h;
   const ul=document.getElementById('ul');let rk=0;
@@ -227,8 +234,8 @@ function render(id){
     h+=`<div class="judge">${['对','错'].map((v,i)=>`<button class="opt" data-v="${v}">${v==='对'?'✓ 对':'✗ 错'}</button>`).join('')}</div>`;
   }else{
     h+=getOrd(q).map((oi,pos)=>{const V=String.fromCharCode(65+oi),L=String.fromCharCode(65+pos);return `<button class="opt" data-v="${V}"><span class="L">${L}</span><span>${esc(q.o[oi])}</span></button>`}).join('');
-    if(q.t==='多')h+=`<button class="btn pri" id="sub" disabled>提交</button>`;
   }
+  h+=`<div class="subbar"><button class="btn pri" id="sub" disabled>提交${q.t==='多'?'（可多选）':''}</button></div>`;
   h+=`<div id="after"></div></div></div>`;
   app.innerHTML=h;
   document.getElementById('bk').onclick=home;
@@ -238,10 +245,10 @@ function render(id){
 }
 function pick(v){
   if(sess.answered||sess.view!=null)return;const q=Q[sess.cur];
-  if(q.t==='多'){const i=sess.sel.indexOf(v);i<0?sess.sel.push(v):sess.sel.splice(i,1);
-    document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));
-    document.getElementById('sub').disabled=!sess.sel.length;return;}
-  sess.sel=[v];submit();
+  if(q.t==='多'){const i=sess.sel.indexOf(v);i<0?sess.sel.push(v):sess.sel.splice(i,1);}
+  else sess.sel=[v];
+  document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));
+  const sb=document.getElementById('sub');if(sb)sb.disabled=!sess.sel.length;
 }
 function submit(){
   if(sess.answered||sess.view!=null||!sess.sel.length)return;const q=Q[sess.cur];
@@ -265,17 +272,18 @@ function stripPre(o,t){const i=t.indexOf('：');if(i<1||!o)return t;const raw=t.
   const op=(raw.match(/\x01/g)||[]).length-(raw.match(/\x02/g)||[]).length;if(op>0)rest='\x01'+rest;return rest;}
 function showAfter(q,sel,ok){
   const OE={};if(q.t!=='判'&&q.e)for(const x of q.e.split('\n')){const m=x.trim().match(/^([A-E])([✓✗])\s*([\s\S]*)$/);if(m)OE[m[1]]=m[3];}
-  const hasOE=Object.keys(OE).length>0;
+  const hasOE=q.t!=='判'&&Object.keys(OE).length>0;
   document.querySelectorAll('.opt').forEach(b=>{const v=b.dataset.v;const inA=q.t==='判'?v===q.a:q.a.includes(v);const inM=sel.includes(v);
     b.querySelectorAll('.oe').forEach(e=>e.remove());
     if(OE[v]&&b.children[1]){let t=OE[v];const o=q.o[v.charCodeAt(0)-65]||'';if(o&&t.startsWith(o+'：'))t=t.slice(o.length+1);else t=stripPre(o,t);if(/^\s*(不对|不是|原文|按题目记|不在里面|错误|正确|对|错|不符|无关)[。．.]?\s*$/.test(t.replace(/[\x01\x02]/g,'')))t=inA?'':'干扰项';if(t)
-      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>')}</span>`);}
+      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe ${inA?'yes':'no'}">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<b class="hl">').replace(/\x04/g,'</b>')}</span>`);}
     b.classList.remove('sel');if(inA&&inM)b.classList.add('ok');else if(inM)b.classList.add('bad');else if(inA)b.classList.add(q.t==='多'?'miss':'ok');b.disabled=true;});
   const sb=document.getElementById('sub');if(sb)sb.remove();
   let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}</div><button class="btn pri" id="nx">下一题</button>`;
   if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题本':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题本':'加入错题本')}</button>`;}
   const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
-  if(q.e)h+=`<div class="box"><h4>解析</h4>${fmtExp(q.e,mk,hasOE)}</div>`;
+  const ex=q.e?fmtExp(q.e,mk,hasOE):'';
+  if(ex)h+=`<div class="box"><h4>解析</h4>${ex}</div>`;
   if(q.k)h+=`<div class="box book"><h4>考点</h4>${fmtBook(q)}</div>`;
   document.getElementById('after').innerHTML=h;
   document.getElementById('nx').onclick=goNext;

@@ -18,6 +18,7 @@ SHELL = os.path.join(ROOT, "刷题", "_shell.html")
 OUT = os.path.join(ROOT, "quiz.html")
 TAGGED = os.path.join(ROOT, "data", "tagged.json")
 ANSWERS = os.path.join(ROOT, "data", "answers.json")
+SHAPED = os.path.join(ROOT, "data", "answers_shaped.json")
 
 TCODE = {"单项选择": "单", "多项选择": "多", "判断题": "判"}
 CHAPTER_ORDER_HINT = {}  # 预留：如需固定章节顺序可在此填
@@ -68,7 +69,7 @@ def build_data(tagged, answers, allow_missing=False):
             "s": q["stem"].strip(),
             "o": [q["options"][k] for k in "ABCD"],
             "a": a,
-            "e": clean_expl(ans.get("e")),
+            "e": clean_expl(ans.get("e")) or "本题官方未给出解析，考点见下方。",
             "k": q["node"],
         })
     if missing and not allow_missing:
@@ -98,6 +99,15 @@ def main():
     if os.path.exists(ANSWERS):
         answers = json.load(open(ANSWERS, encoding="utf-8"))
         answers = {k: v for k, v in answers.items() if not k.startswith("_")}
+        # 有结构化解析（结论 + 逐项 A✓/B✗ + 补充要点）就优先用，缺的退回原文
+        if os.path.exists(SHAPED):
+            shaped = json.load(open(SHAPED, encoding="utf-8"))
+            n = 0
+            for k, v in shaped.items():
+                if k in answers and v.get("e"):
+                    answers[k] = dict(answers[k], e=v["e"])
+                    n += 1
+            print(f"结构化解析 {n} 条")
     data, missing = build_data(tagged, answers, allow_missing)
 
     shell = open(SHELL, encoding="utf-8").read()
