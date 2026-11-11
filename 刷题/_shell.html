@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>法硕（非法学）专业基础课 真题刷题</title>
+<style>
+:root{--bg:#f5f5f2;--card:#fff;--ink:#1d1d1f;--sub:#6b6b70;--line:#e3e3e0;--acc:#2f6fdb;--ok:#1f9d55;--okbg:#e7f6ec;--bad:#d64545;--badbg:#fdeaea;--warn:#b7791f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:12px 14px 80px}
+header{display:flex;align-items:center;gap:10px;margin:4px 0 12px}
+header h1{font-size:19px;margin:0;flex:1}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px;font-size:15px;white-space:nowrap;cursor:pointer}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.stats b{display:block;font-size:20px}
+.stats span{font-size:12.5px;color:var(--sub)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px}
+.btn.pri{background:var(--acc);color:#fff}
+.btn.sec{background:#eef1f6;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.addwb{display:block;margin:6px 2px 0 auto;background:none;border:0;padding:4px 2px;font-size:13px;color:var(--sub);cursor:pointer}
+.addwb:disabled{cursor:default;opacity:.7}
+.hint{font-size:13px;color:var(--sub);margin-top:6px}
+.unit{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--line);cursor:pointer}
+.unit:first-child{border-top:0}
+.unit .rk{width:26px;color:var(--sub);font-size:13px;text-align:right;flex:none}
+.unit .nm{flex:1;min-width:0}
+.unit .nm div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.unit .meta{font-size:12.5px;color:var(--sub)}
+.unit .nm div.meta{white-space:normal}
+.bar{height:5px;background:#ececea;border-radius:3px;margin-top:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.unit.drop{opacity:.6}
+.unit .rs{flex:none;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;padding:3px 9px;font-size:12.5px;cursor:pointer}
+.sw{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--sub);margin:4px 0 8px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.back{border:0;background:none;font-size:15px;color:var(--acc);cursor:pointer;padding:6px 0}
+.top .where{flex:1;font-size:13px;color:var(--sub);text-align:right;line-height:1.35}
+.tag{display:inline-block;font-size:12.5px;color:var(--sub);background:#f0f0ee;border-radius:6px;padding:1px 8px;margin-right:6px}
+.tag.rev{background:#fff4e0;color:var(--warn)}
+.stem{font-size:18px;margin:10px 0 14px;line-height:1.7}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:9px;font-size:16.5px;cursor:pointer;color:var(--ink)}
+.opt .L{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid #c9c9c6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
+.opt.sel{border-color:var(--acc)}
+.opt>span:nth-child(2){flex:1;min-width:0}
+.oe{display:block;margin-top:5px;font-size:14.5px;line-height:1.6;color:#55555a}
+.oe b{color:var(--ink)}
+@media (max-width:899px){.oe{font-size:13.5px}}
+.opt.sel .L{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ok .L{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt.bad .L{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.miss{border-color:var(--ok);background:var(--okbg)}
+.opt.miss .L{border-color:var(--ok);color:var(--ok)}
+.judge{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.judge .opt{justify-content:center;font-size:18px;font-weight:600}
+.res{border-radius:12px;padding:10px 14px;margin:6px 0 10px;font-weight:600}
+.res.ok{background:var(--okbg);color:var(--ok)}
+.res.bad{background:var(--badbg);color:var(--bad)}
+.res small{font-weight:400;color:var(--sub);display:block}
+.box{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:10px 0;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.box b{font-weight:700;color:var(--ink)}
+.xp{margin:3px 0}
+.xo{display:flex;align-items:flex-start;gap:9px;margin:8px 0}
+.xk{flex:none;width:22px;height:22px;margin-top:2px;border-radius:50%;font-size:12.5px;font-weight:700;line-height:22px;text-align:center;color:#fff;background:var(--bad)}
+.xo.ok .xk{background:var(--ok)}
+.xt{flex:1;min-width:0}
+.xo.hit{background:var(--badbg);border:1.5px solid var(--bad);border-radius:8px;padding:4px 7px;margin-left:-8px;margin-right:-8px}
+.xo.hit.miss{background:none;border-style:dashed}
+.xg{flex:none;align-self:center;font-size:12.5px;font-weight:700;color:var(--bad);background:var(--badbg);border-radius:6px;padding:0 7px}
+.xm{margin:4px 0 8px;padding:7px 11px;background:#f4f5f7;border-radius:8px}
+.xl{font-weight:700;color:var(--warn);margin-right:8px}
+.box h4{margin:0 0 2px;font-size:13px;color:var(--sub);font-weight:600}
+.box.book{border-color:#9db8e8}
+.box.note{border-color:#e8c48a}
+.empty{text-align:center;color:var(--sub);padding:30px 0}
+.warnbar{background:#fff4e0;color:#7a5410;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
+textarea{width:100%;height:90px;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:8px}
+.foot{display:flex;gap:8px;flex-wrap:wrap}
+.foot button{flex:1;min-width:120px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px;font-size:14px;cursor:pointer}
+.wb{padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.wb:first-child{border-top:0}
+.wb .a{color:var(--ok);font-weight:600}
+
+.kbd{font-size:12px;color:var(--sub);text-align:center;margin-top:8px}
+@media (max-width:520px){.kbd{display:none}.stem{font-size:17px}}
+@media (max-width:899px){.quizpg{padding-top:3vh}body{font-size:15px}header h1{font-size:18px}.stem{font-size:16px}.opt{font-size:15.5px}.opt .L{font-size:13px}.judge .opt{font-size:17px}.btn{font-size:16px}.box{font-size:14px}.wb{font-size:14px}.tab{font-size:14px}.back{font-size:14px}.stats b{font-size:19px}}
+@media (min-width:900px){
+.wrap{max-width:960px;padding-top:20px}
+body{font-size:17px}
+header h1{font-size:22px}
+.quizpg{padding-top:12vh}
+.quizpg .card{padding:24px 30px}
+.stem{font-size:22px;margin:12px 0 20px}
+.opt{font-size:19px;padding:14px 18px;margin-bottom:12px;gap:14px}
+.opt .L{width:30px;height:30px;font-size:15px}
+.judge .opt{font-size:21px}
+.btn{font-size:18px;padding:15px}
+.res{font-size:18px}
+.box{font-size:16.5px}
+.tag{font-size:13.5px}
+.top .where{font-size:14px}
+.back{font-size:16px}
+.unit .meta{font-size:13.5px}
+.stats b{font-size:24px}.stats span{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script id="data" type="application/json">
+/*__QUIZ_DATA__*/
+</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);
+function fmtBook(q){return esc(q.k||'');}
+const SUBS=['全部','刑法','民法'];
+const SUBNAME={'全部':'全部','刑法':'刑法','民法':'民法'};
+const TN={'判':'判断','单':'单选','多':'多选'};
+// index
+const Q={};D.forEach((u,ui)=>{u.ui=ui;u.qs.forEach((q,qi)=>{q.u=ui;q.qi=qi;Q[q.id]=q;})});
+// storage
+const KEY='fsjc_v1';let canSave=true;let S;
+try{S=JSON.parse(localStorage.getItem(KEY)||'null');localStorage.setItem(KEY+'_t','1');}catch(e){canSave=false;}
+if(!S||!S.q)S={q:{},sub:'全部',drop:false};
+if(!S.v2){const now=Date.now();for(const id in S.q){if(S.q[id].length<5)S.q[id][4]=now;}S.v2=1;}
+function save(){if(!canSave)return;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+// 进度只存在本机浏览器（localStorage），不做任何联网上传。
+const today=()=>Math.floor((Date.now()+8*36e5)/864e5);  // 北京时间的日期序号，错题本按天计数用
+// st: [status, streak, due, wrongCount]  status 1=一次做对 2=错题本 3=错题已掌握
+const st=id=>{const s=S.q[id];return s&&s[0]?s:undefined};  // status 0 = 这一节被重置过，当作没做
+function inScope(u){return S.sub==='全部'||u.sub===S.sub}
+function qInScope(q){return inScope(D[q.u])}
+function rint(n){try{const c=window.crypto;if(c&&c.getRandomValues){const b=new Uint32Array(1),lim=4294967296-4294967296%n;let x;do{c.getRandomValues(b);x=b[0];}while(x>=lim);return x%n;}}catch(e){}return Math.floor(Math.random()*n);}
+function dueList(){const d=today();return wrongList().filter(id=>S.q[id][2]!==d);}  // 今天还没在错题本里做过的
+function wrongList(){return Object.keys(S.q).filter(id=>Q[id]&&S.q[id][0]===2&&qInScope(Q[id])).sort((a,b)=>Q[a].u-Q[b].u||Q[a].qi-Q[b].qi);}
+function nextNew(unitOnly){
+  const us=unitOnly!=null?[D[unitOnly]]:D.filter(inScope);
+  for(const u of us){const l=u.qs.filter(q=>!st(q.id)&&q.id!==(sess&&sess.cur));if(l.length)return l[rint(l.length)].id;}
+  for(const u of us){for(const q of u.qs){if(!st(q.id))return q.id;}}
+  return null;
+}
+let view={name:'home'};let sess=null;
+const $=h=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>');
+  let h0=t.split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>{let m=x.match(/^([A-E])([✓✗])\s*([\s\S]*)$/);
+    if(m&&skipOpt)return '';
+    if(m)return `<div class="xo ${m[2]=='✓'?'ok':'no'}${mk[m[1]]?(mk[m[1]]=='漏选'?' hit miss':' hit'):''}"><span class="xk">${m[1]}</span><span class="xt">${m[3]}</span>${mk[m[1]]=='漏选'?`<span class="xg">漏选</span>`:''}</div>`;
+    m=x.match(/^记法[:：]\s*([\s\S]*)$/);if(m)return `<div class="xm"><span class="xl">记法</span>${m[1]}</div>`;
+    return `<div class="xp">${x}</div>`;});h0=[...h0.filter(x=>x.startsWith('<div class="xm"')),...h0.filter(x=>!x.startsWith('<div class="xm"'))].join('');const XM=/(<div class="xm"><span class="xl">记法<\/span>(?:(?!<\/div>)[\s\S])*)<\/div>(?=<div class="xm"><span class="xl">记法<\/span>)<div class="xm"><span class="xl">记法<\/span>/g;let pv;do{pv=h0;h0=h0.replace(XM,'$1<br>');}while(h0!==pv);return h0;}
+function home(keepScroll){
+  view={name:'home'};const app=document.getElementById('app');
+  const us=D.filter(inScope);
+  let tot=0,done=0,right=0,ans=0;
+  us.forEach(u=>u.qs.forEach(q=>{tot++;const s=st(q.id);if(s){done++;ans++;if(s[0]!==2)right++;}}));
+  const wr=wrongList().length;
+  let h=`<div><header><h1>法硕基础课 · 真题刷题</h1></header>`;
+  if(!canSave)h+=`<div class="warnbar">当前是预览窗口，做题记录存不下来。请下载这个文件，用手机或电脑的浏览器打开后再做题。</div>`;
+  h+=`<div class="tabs">${SUBS.map(s=>`<div class="tab ${S.sub===s?'on':''}" data-sub="${s}">${SUBNAME[s]}</div>`).join('')}</div>`;
+  h+=`<div class="card"><div class="stats"><div><b>${done}/${tot}</b><span>已做</span></div><div><b>${ans?Math.round(right/ans*100):0}%</b><span>正确率</span></div><div><b>${wr}</b><span>错题本</span></div></div>
+  <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
+  <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题本（${wr} 题）</button></div>`;
+  h+=`<div class="card"><div id="ul"></div></div>`;
+  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div>
+  <div class="foot" style="margin-top:10px"><button id="rst">清空全部进度</button></div></div></div>`;
+  app.innerHTML=h;
+  const ul=document.getElementById('ul');let rk=0;
+  if(!us.length)ul.innerHTML='<div class="empty">没有题</div>';
+  us.forEach(u=>{
+    const qs=u.qs;if(!qs.length)return;
+    let d=0,r=0;qs.forEach(q=>{const s=st(q.id);if(s){d++;if(s[0]!==2)r++;}});
+    rk++;
+    const el=$(`<div class="unit"><div class="rk">${rk}</div><div class="nm"><div>${S.sub==='全部'?`<span class="tag">${SUBNAME[u.sub]||u.sub}</span>`:''}${esc(u.name)}</div><div class="meta">${(+u.w).toFixed(1)}分/年 · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}</div><div class="bar"><i style="width:${qs.length?d/qs.length*100:0}%"></i></div></div>${u.qs.some(q=>st(q.id))?'<button class="rs">重置</button>':''}</div>`);
+    el.onclick=()=>startSess('unit',u.ui);ul.appendChild(el);
+    const rb=el.querySelector('.rs');if(rb)rb.onclick=e=>{e.stopPropagation();resetUnit(u);};
+  });
+  app.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.sub=t.dataset.sub;save();home();});
+  document.getElementById('go').onclick=()=>startSess('main');
+  document.getElementById('wb').onclick=wrongBook;
+  document.getElementById('rst').onclick=()=>{if(confirm('确定清空全部做题记录？只会清空这台设备上的记录，无法恢复。')){S.q={};save();home();}};
+  if(keepScroll!==true)window.scrollTo(0,0);
+}
+function resetUnit(u){
+  const ids=u.qs.map(q=>q.id).filter(id=>st(id));if(!ids.length)return;
+  if(!confirm(`重置「${u.name}」？\n这一节已做的 ${ids.length} 题会全部变回没做过（也会移出错题本）。`))return;
+  const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
+  save();home(true);
+}
+
+function startSess(mode,unit){view={name:'quiz'};sess={mode,unit,queue:mode==='wrong'?(a=>{for(let i=a.length-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;})(dueList()):[],total:0,n:0,right:0,cur:null,answered:false,sel:[],hist:[],view:null};sess.total=sess.queue.length;nextQ();}
+function nextQ(){
+  let id=null,isRev=false;
+  if(sess.mode==='wrong'){
+    while(sess.queue.length){const c=sess.queue.shift();const s=st(c);if(s&&s[0]===2&&s[2]!==today()){id=c;isRev=true;break;}}
+  }else id=nextNew(sess.mode==='unit'?sess.unit:null);
+  if(!id){finish();return;}
+  if(sess.ord)delete sess.ord[id];sess.cur=id;sess.isRev=isRev;sess.answered=false;sess.sel=[];sess.view=null;render();
+}
+function finish(){
+  const app=document.getElementById('app');const left=wrongList().length,due=dueList().length;
+  const msg=sess.mode==='wrong'?(!left?'错题本清空了！':due?`这一轮错题刷完了，今天还有 ${due} 题没做。`:`今天的错题都刷完了，明天再来。错题本里还有 ${left} 题。`):sess.mode==='unit'?'这一节的新题都做完了。':'这个范围里的新题都做完了。';
+  app.innerHTML=`<div><div class="top"><button class="back" id="bk">‹ 返回</button></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>${sess.mode==='wrong'&&due?'<button class="btn pri" id="again">继续刷</button>':''}<button class="btn sec" id="bk2">回首页</button></div>`;
+  document.getElementById('bk').onclick=document.getElementById('bk2').onclick=home;
+  const ag=document.getElementById('again');if(ag)ag.onclick=()=>startWrong(ag);
+  window.scrollTo(0,0);
+}
+// 选项乱序：每次出题随机排列，显示字母按位置重新编号；内部仍用原字母判分
+const REFL=/(^|[^A-Za-z0-9])[A-E]([、，,和与及 ]|项|的|对|错|$)/;
+function noShuf(q){return (q.e||'').split('\n').some(x=>!/^\s*[A-E][✓✗]/.test(x)&&REFL.test(x.replace(/[\x01\x02]/g,'')));}
+function getOrd(q){if(!sess.ord)sess.ord={};let o=sess.ord[q.id];
+  if(!o||o.length!==q.o.length){o=q.o.map((_,i)=>i);if(!noShuf(q))for(let i=o.length-1;i>0;i--){const j=rint(i+1);[o[i],o[j]]=[o[j],o[i]];}sess.ord[q.id]=o;}
+  return o;}
+function dispAns(q,x){const o=getOrd(q);return (x==null?q.a.split(''):[...x]).map(v=>String.fromCharCode(65+o.indexOf(v.charCodeAt(0)-65))).sort().join('');}
+function render(id){
+  const q=Q[id||sess.cur],u=D[q.u];const app=document.getElementById('app');
+  const s=st(q.id);
+  let h=`<div class="quizpg"><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card">`;
+  h+=`<span class="tag">${q.y}年 ${TN[q.t]}</span>`;
+  h+=`<div class="stem">${esc(q.s)}</div>`;
+  if(q.t==='判'){
+    h+=`<div class="judge">${['对','错'].map((v,i)=>`<button class="opt" data-v="${v}">${v==='对'?'✓ 对':'✗ 错'}</button>`).join('')}</div>`;
+  }else{
+    h+=getOrd(q).map((oi,pos)=>{const V=String.fromCharCode(65+oi),L=String.fromCharCode(65+pos);return `<button class="opt" data-v="${V}"><span class="L">${L}</span><span>${esc(q.o[oi])}</span></button>`}).join('');
+    if(q.t==='多')h+=`<button class="btn pri" id="sub" disabled>提交</button>`;
+  }
+  h+=`<div id="after"></div></div></div>`;
+  app.innerHTML=h;
+  document.getElementById('bk').onclick=home;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b.dataset.v));
+  const sb=document.getElementById('sub');if(sb)sb.onclick=submit;
+  window.scrollTo(0,0);
+}
+function pick(v){
+  if(sess.answered||sess.view!=null)return;const q=Q[sess.cur];
+  if(q.t==='多'){const i=sess.sel.indexOf(v);i<0?sess.sel.push(v):sess.sel.splice(i,1);
+    document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));
+    document.getElementById('sub').disabled=!sess.sel.length;return;}
+  sess.sel=[v];submit();
+}
+function submit(){
+  if(sess.answered||sess.view!=null||!sess.sel.length)return;const q=Q[sess.cur];
+  const mine=sess.sel.slice().sort().join('');const ok=mine===q.a;
+  sess.answered=true;sess.n++;if(ok)sess.right++;
+  const now=Date.now();let s=S.q[q.id];
+  const d=today();
+  if(!s||!s[0]){S.q[q.id]=ok?[1,0,0,0,now]:[2,0,d,1,now];}
+  else if(s[0]===2){if(ok){if(s[2]!==d){s[1]++;if(s[1]>=2)s[0]=3;}}else{s[1]=0;s[3]++;}s[2]=d;s[4]=now;}  // 错题本：每天最多算一次，连续两天做对才移出
+  else{if(!ok){S.q[q.id]=[2,0,d,(s[3]||0)+1,now];}}
+
+  save();
+  sess.hist.push({id:q.id,sel:sess.sel.slice()});
+  showAfter(q,sess.sel,ok);
+}
+// 选项说明开头若只是重复选项（如“爬到树上：…”），显示时去掉；带括号补充或数字单位不同的保留
+function stripPre(o,t){const i=t.indexOf('：');if(i<1||!o)return t;const raw=t.slice(0,i),pre=raw.replace(/[\x01\x02]/g,'');let rest=t.slice(i+1);
+  if(!rest.replace(/[\x01\x02\s。]/g,''))return t;if(/[（(]/.test(pre))return t;
+  const core=[...pre.replace(/[《》“”"\s]/g,'')];if(!core.length)return t;const miss=core.filter(c=>!o.includes(c));
+  if((core.length-miss.length)/core.length<0.6)return t;if(/\d/.test(o)&&miss.length)return t;
+  const op=(raw.match(/\x01/g)||[]).length-(raw.match(/\x02/g)||[]).length;if(op>0)rest='\x01'+rest;return rest;}
+function showAfter(q,sel,ok){
+  const OE={};if(q.t!=='判'&&q.e)for(const x of q.e.split('\n')){const m=x.trim().match(/^([A-E])([✓✗])\s*([\s\S]*)$/);if(m)OE[m[1]]=m[3];}
+  const hasOE=Object.keys(OE).length>0;
+  document.querySelectorAll('.opt').forEach(b=>{const v=b.dataset.v;const inA=q.t==='判'?v===q.a:q.a.includes(v);const inM=sel.includes(v);
+    b.querySelectorAll('.oe').forEach(e=>e.remove());
+    if(OE[v]&&b.children[1]){let t=OE[v];const o=q.o[v.charCodeAt(0)-65]||'';if(o&&t.startsWith(o+'：'))t=t.slice(o.length+1);else t=stripPre(o,t);if(/^\s*(不对|不是|原文|按题目记|不在里面|错误|正确|对|错|不符|无关)[。．.]?\s*$/.test(t.replace(/[\x01\x02]/g,'')))t=inA?'':'干扰项';if(t)
+      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>')}</span>`);}
+    b.classList.remove('sel');if(inA&&inM)b.classList.add('ok');else if(inM)b.classList.add('bad');else if(inA)b.classList.add(q.t==='多'?'miss':'ok');b.disabled=true;});
+  const sb=document.getElementById('sub');if(sb)sb.remove();
+  let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}</div><button class="btn pri" id="nx">下一题</button>`;
+  if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题本':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题本':'加入错题本')}</button>`;}
+  const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
+  if(q.e)h+=`<div class="box"><h4>解析</h4>${fmtExp(q.e,mk,hasOE)}</div>`;
+  if(q.k)h+=`<div class="box book"><h4>考点</h4>${fmtBook(q)}</div>`;
+  document.getElementById('after').innerHTML=h;
+  document.getElementById('nx').onclick=goNext;
+  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save();aw.textContent='已加入错题本';aw.disabled=true;};
+}
+// 上一题/下一题：上一题只能回看本次已做的题（显示当时的作答和解析，不能改答案）
+function goPrev(){
+  if(!sess||view.name!=='quiz'||!document.querySelector('.stem'))return;
+  const H=sess.hist;let i;
+  if(sess.view==null)i=sess.answered?H.length-2:H.length-1;else i=sess.view-1;
+  if(i<0)return;showHist(i);
+}
+function goNext(){
+  if(!sess||view.name!=='quiz'||!document.querySelector('.stem'))return;
+  const H=sess.hist;
+  if(sess.view!=null){
+    const last=sess.answered?H.length-2:H.length-1;
+    if(sess.view<last){showHist(sess.view+1);return;}
+    sess.view=null;render();
+    if(sess.answered){const h=H[H.length-1];showAfter(Q[h.id],h.sel,h.sel.slice().sort().join('')===Q[h.id].a);}
+    else if(sess.sel.length){document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));const sb=document.getElementById('sub');if(sb)sb.disabled=false;}
+    return;
+  }
+  if(sess.answered)nextQ();
+}
+function showHist(i){
+  sess.view=i;const h=sess.hist[i];const q=Q[h.id];render(h.id);
+  const sb=document.getElementById('sub');if(sb)sb.remove();
+  showAfter(q,h.sel,h.sel.slice().sort().join('')===q.a);
+}
+(()=>{let x0=null,y0=0,t0=0;
+  document.addEventListener('touchstart',e=>{if(e.touches.length!==1){x0=null;return;}x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();},{passive:true});
+  document.addEventListener('touchend',e=>{if(x0==null)return;const t=e.changedTouches[0];const dx=t.clientX-x0,dy=t.clientY-y0;x0=null;
+    if(Date.now()-t0>800||Math.abs(dx)<60||Math.abs(dx)<1.5*Math.abs(dy))return;
+    if(dx<0)goNext();else goPrev();},{passive:true});
+})();
+function wrongBook(){
+  view={name:'wb'};const app=document.getElementById('app');const ids=wrongList();
+  let h=`<div><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">错题本 ${ids.length} 题${S.sub==='全部'?'':' · '+SUBNAME[S.sub]}</div></div>`;
+  const dn=dueList().length;
+  h+=`<button class="btn pri" id="redo" ${dn?'':'disabled'} style="margin:0 0 12px">${dn?`重刷错题（今天 ${dn} 题）`:ids.length?'今天的错题都刷完了，明天再来':'重刷错题'}</button>`;
+  h+=`<div class="card"><div class="hint" style="margin:0 0 6px">错题列表，按重要性排序。</div>`;
+  h+=ids.map(id=>{const q=Q[id];
+    return `<div class="wb"><span class="tag">${q.y} ${TN[q.t]}</span><div>${esc(q.s)}</div></div>`}).join('')||'<div class="empty">错题本是空的</div>';
+  h+='</div></div>';app.innerHTML=h;document.getElementById('bk').onclick=home;
+  document.getElementById('redo').onclick=e=>startWrong(e.currentTarget);window.scrollTo(0,0);
+}
+// 键盘不参与做题：没有快捷键，回车/空格也不会触发按钮（防误触），只能点
+document.addEventListener('keydown',e=>{
+  const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&e.target.type==='text'))return;
+  if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();e.stopPropagation();}
+},true);
+document.addEventListener('keyup',e=>{const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&e.target.type==='text'))return;if(e.key===' '||e.key==='Spacebar'){e.preventDefault();}},true);
+
+home();
+</script>
+</body>
+</html>

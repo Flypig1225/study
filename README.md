@@ -10,6 +10,7 @@
 - **主观题 22 年考点全表**（每年简答、法条分析、案例、辨析考了什么）
 - **2027 押题**（考试日 2026-12-19），含打分模型、S/A/B 分档、回避清单、5 周冲刺排期
 - **章节比重拆分**（客观题 / 主观题分开排序）+ 考点复现率检验（"考过还会不会再考"）
+- **单文件刷题页**（`刷题/法硕基础课-真题刷题.html`）：1100 道客观题按刑法/民法章节分组，章节进度、顺序/随机、判分、错题本按天复习、重置、历史统计，纯本地无联网
 
 ## 目录
 
@@ -23,6 +24,7 @@ data/
   tagged.json            题目 + 知识板块标签
   node_overrides.json    人工校正标签
   manual_questions.json  OCR 缺行的人工补齐题
+  option_fixes.json      OCR 丢行的选项补录（1 题）
 分析/
   法硕基础课-真题量化分析与2027押题.md   ← 主报告
   刑法民法-章节比重-客观题与主观题.md   ← 章节比重（客观/主观拆分）+ 复现率
@@ -33,6 +35,10 @@ tools/
   parse_exam.py          按年份卷面结构表结构化题目
   classify.py            板块打标 + 统计
   recurrence.py          考点复现率检验（考点 × 年份矩阵）
+  build_quiz.py          tagged.json + answers.json → 刷题/法硕基础课-真题刷题.html
+刷题/
+  _shell.html            刷题页外壳（模板骨架，含全部 JS/CSS，去掉科目专属数据）
+  法硕基础课-真题刷题.html  构建产物（需 data/answers.json 才能生成）
 ```
 
 ## 一分钟上手
@@ -42,6 +48,7 @@ pip install --break-system-packages pypdf pymupdf rapidocr-onnxruntime opencv-py
 bash tools/run_extract.sh      # PDF → materials/text/（首次约 15 分钟，纯 OCR 部分）
 python3 tools/parse_exam.py    # → data/questions.json
 python3 tools/classify.py      # → data/tagged.json + 板块统计
+python3 tools/build_quiz.py    # → 刷题/法硕基础课-真题刷题.html（需 data/answers.json）
 ```
 
 ## 数据说明
