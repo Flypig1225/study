@@ -51,9 +51,11 @@ header h1{font-size:19px;margin:0;flex:1}
 .oe.yes{color:#166b41}
 .oe.no{color:#a8382f}
 .opt>span:nth-child(2){flex:1;min-width:0}
-.oe{display:block;margin-top:5px;font-size:14.5px;line-height:1.6;color:#55555a}
+.oe{display:block;margin-top:6px;font-size:13.5px;line-height:1.5;color:#6a6a70;font-weight:400}
 .oe b{color:var(--ink)}
-@media (max-width:899px){.oe{font-size:13.5px}}
+@media (max-width:899px){.oe{font-size:13px}}
+.hl{color:#c0392b;font-weight:700}
+.xsec{font-weight:600;color:var(--ink);margin:10px 0 2px;font-size:14.5px}
 .opt.sel .L{background:var(--acc);border-color:var(--acc);color:#fff}
 .opt.ok{border-color:var(--ok);background:var(--okbg)}
 .opt.ok .L{background:var(--ok);border-color:var(--ok);color:#fff}
@@ -152,11 +154,12 @@ function nextNew(unitOnly){
 let view={name:'home'};let sess=null;
 const $=h=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
 const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>');
+function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<b class="hl">').replace(/\x04/g,'</b>');
   let h0=t.split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>{let m=x.match(/^([A-E])([✓✗])\s*([\s\S]*)$/);
     if(m&&skipOpt)return '';
     if(m)return `<div class="xo ${m[2]=='✓'?'ok':'no'}${mk[m[1]]?(mk[m[1]]=='漏选'?' hit miss':' hit'):''}"><span class="xk">${m[1]}</span><span class="xt">${m[3]}</span>${mk[m[1]]=='漏选'?`<span class="xg">漏选</span>`:''}</div>`;
     m=x.match(/^记法[:：]\s*([\s\S]*)$/);if(m)return `<div class="xm"><span class="xl">记法</span>${m[1]}</div>`;
+    if(/^【[^】]{1,8}】$/.test(x))return `<div class="xsec">${x.replace(/[【】]/g,'')}</div>`;
     return `<div class="xp">${x}</div>`;});h0=[...h0.filter(x=>x.startsWith('<div class="xm"')),...h0.filter(x=>!x.startsWith('<div class="xm"'))].join('');const XM=/(<div class="xm"><span class="xl">记法<\/span>(?:(?!<\/div>)[\s\S])*)<\/div>(?=<div class="xm"><span class="xl">记法<\/span>)<div class="xm"><span class="xl">记法<\/span>/g;let pv;do{pv=h0;h0=h0.replace(XM,'$1<br>');}while(h0!==pv);return h0;}
 function home(keepScroll){
   view={name:'home'};const app=document.getElementById('app');
@@ -273,14 +276,14 @@ function showAfter(q,sel,ok){
   document.querySelectorAll('.opt').forEach(b=>{const v=b.dataset.v;const inA=q.t==='判'?v===q.a:q.a.includes(v);const inM=sel.includes(v);
     b.querySelectorAll('.oe').forEach(e=>e.remove());
     if(OE[v]&&b.children[1]){let t=OE[v];const o=q.o[v.charCodeAt(0)-65]||'';if(o&&t.startsWith(o+'：'))t=t.slice(o.length+1);else t=stripPre(o,t);if(/^\s*(不对|不是|原文|按题目记|不在里面|错误|正确|对|错|不符|无关)[。．.]?\s*$/.test(t.replace(/[\x01\x02]/g,'')))t=inA?'':'干扰项';if(t)
-      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe ${inA?'yes':'no'}">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>')}</span>`);}
+      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe ${inA?'yes':'no'}">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>').replace(/\x03/g,'<b class="hl">').replace(/\x04/g,'</b>')}</span>`);}
     b.classList.remove('sel');if(inA&&inM)b.classList.add('ok');else if(inM)b.classList.add('bad');else if(inA)b.classList.add(q.t==='多'?'miss':'ok');b.disabled=true;});
   const sb=document.getElementById('sub');if(sb)sb.remove();
   let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}</div><button class="btn pri" id="nx">下一题</button>`;
   if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题本':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题本':'加入错题本')}</button>`;}
   const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
   const ex=q.e?fmtExp(q.e,mk,hasOE):'';
-  if(ex)h+=`<div class="box"><h4>${hasOE?'补充要点':'解析'}</h4>${ex}</div>`;
+  if(ex)h+=`<div class="box"><h4>${hasOE?'解析详解':'解析'}</h4>${ex}</div>`;
   if(q.k)h+=`<div class="box book"><h4>考点</h4>${fmtBook(q)}</div>`;
   document.getElementById('after').innerHTML=h;
   document.getElementById('nx').onclick=goNext;

@@ -103,7 +103,9 @@ def attribute(sents):
             else:
                 continue
         body = re.sub(r"^\s*(?:选项)?[A-D](?:选项|项)?\s*", "", body).strip(" ,，。；")
-        if not body or len(body) < 10 or re.fullmatch(r"(正确|错误|当选|不选|对|错)(项|选项)?", body):
+        if (not body or len(body) < 10
+                or re.fullmatch(r"(正确|错误|当选|不选|对|错)(项|选项)?", body)
+                or re.match(r"^(都|均|皆|全|一律|只有|选项)", body)):
             continue
         for L in letters:
             got.setdefault(L, body)
@@ -154,6 +156,79 @@ def despac(t):
     return t
 
 
+CITE = re.compile
+CITE = re.compile(r"《[^》]{2,34}》(?:第[〇一二三四五六七八九十百零\d]+条(?:第[〇一二三四五六七八九十百零\d]+款)?)?")
+CRIME = re.compile(r"(?:不)?(?:构成|属于|成立)[^，。；、]{2,18}?罪")
+
+
+def hl(t):
+    """补充要点里的重点：法条、罪名用红字加粗包起来（\x03…\x04）。"""
+    t = CITE.sub(lambda m: "\x03" + m.group(0) + "\x04", t)
+    t = CRIME.sub(lambda m: "\x03" + m.group(0) + "\x04", t)
+    return re.sub(r"\x03(\x03[^\x04]*\x04)\x04", r"\1", t)
+
+
+def clause_split(t):
+    return [c for c in re.split(r"[，,、；;。]", t or "") if c.strip()]
+
+
+VERBISH = re.compile(r"(不|是|为|属于|构成|应当|可以|不得|无效|有效|优先|没有|须|需|按|依|即|指)")
+BADDOT = re.compile(r"^(选项|都|均|皆|全|只有)")
+GOODEND = re.compile(r"(罪|行为|顺序|原则|规定|权利|义务|责任|效力|有效|无效|成立|不成立|优先受偿|约束力|期限|范围)$")
+VERD = re.compile(r"(构成[^，。；]{0,14}罪|不构成[^，。；]{0,10}罪|优先受偿|无效|有效|成立|不成立|应当|不得|不予|属于|不属于|按|按照)")
+FILLER = re.compile(r"^(可见|本题中|本案中|因此|所以|故|但是|但|而|并|且|则|据此|综上|另|此外)[,，]?\s*")
+
+
+def gist(body, option_text, limit=22):
+    """选项下面那一行：只留最关键的一句，长度控制在框里放得下。"""
+    t = despac(strip_tail(body or "")).strip(" 。，；")
+    t = FILLER.sub("", t)
+    if not t:
+        return ""
+    cls = [FILLER.sub("", c).strip(" ,，。；") for c in clause_split(t)]
+    cls = [c for c in cls if c]
+    # 法条出处那半句（根据《…》…规定）不算概要
+    cls = [c for c in cls if not re.match(r"^\s*(根据|依据|按照)?\s*《", c)
+           and not re.match(r"^\s*根据[^，。；]{0,30}(规定|条)", c)] or cls
+    if not cls:
+        return t[:limit]
+    opt = re.sub(r"[^\u4e00-\u9fffA-Za-z0-9]", "", option_text or "")
+    pick = None
+    for c in cls:                                   # 先找带结论词的短句
+        if VERD.search(c) and len(c) <= limit + 2:
+            pick = c
+            break
+    if not pick and opt:                            # 再找命中选项关键词的短句
+        for c in cls:
+            if len(c) > limit:
+                continue
+            for size in (8, 6, 5, 4):
+                if any(opt[i:i + size] and opt[i:i + size] in c
+                       for i in range(0, max(1, len(opt) - size + 1))):
+                    pick = c
+                    break
+            if pick:
+                break
+    if not pick:
+        c = min(cls, key=len)
+        if len(c) <= 16:
+            pick = c
+    if pick and (BADDOT.search(pick)
+                 or (not GOODEND.search(pick) and len(pick) > 12)
+                 or (not GOODEND.search(pick) and not VERBISH.search(pick))):
+        pick = None                       # 半截话/空缺短语不要，改成通用提示
+    if not pick:
+        return ""
+    if len(pick) <= limit:
+        return pick
+    cut = pick[:limit]
+    for mark in ("，", "、", "；", "的"):
+        i = cut.rfind(mark)
+        if i >= int(limit * 0.5):
+            return cut[:i]
+    return cut
+
+
 def shape(ans, options):
     a = ans.get("a") or ""
     text = clean(ans.get("e") or "")
@@ -164,49 +239,72 @@ def shape(ans, options):
     per = attribute(sents)
     used = {concl} if concl else set()
 
-    lines, bold, seen_body = [], "", set()
+    lines, detail, seen_body = [], [], set()
     for L in "ABCD":
         mark = "✓" if L in a else "✗"
         body = per.get(L)
         if not body and options:
             body = phrase_reason(options.get(L, ""), text)
-        if body and short(body) in seen_body:      # 同一个理由不重复挂在多个选项下
+        if body and gist(body, None) in seen_body:      # 同一个理由不重复挂在多个选项下
             body = ""
         if body:
             used.add(body)
-            seen_body.add(short(body))
+            seen_body.add(gist(body, None))
         if L in a and not body:
-            # 正确项没有单独评述时，用结论句或最长的一句正文充当理由
             cand = concl if (concl and len(concl) >= 12 and concl not in used
-                             and short(concl) not in seen_body) else ""
+                             and gist(concl, None) not in seen_body) else ""
             if not cand:
                 pool = [x for x in sents if x not in used and len(strip_tail(x)) >= 12
-                        and short(x) not in seen_body]
+                        and gist(x, None) not in seen_body]
                 cand = max(pool, key=len) if pool else ""
             body = cand
             if body:
                 used.add(body)
-                seen_body.add(short(body))
+                seen_body.add(gist(body, None))
         if body:
-            lines.append(f"{L}{mark} {short(body)}")
+            g = gist(body, (options or {}).get(L, ""))
+            if not g:
+                g = "表述正确，详见下方" if L in a else "本题不选，理由见下方"
+            lines.append(f"{L}{mark} {g}")
+            full = despac(strip_tail(body)).strip(" 。，；")
+            if len(full) > len(g) + 4:
+                if len(full) > 190:
+                    cut = full[:190]
+                    i = max(cut.rfind("。"), cut.rfind("；"), cut.rfind(","))
+                    full = cut[:i + 1] if i > 100 else cut + "…"
+                detail.append(f"{L} 项：{hl(full)}")
         else:
-            lines.append(f"{L}{mark} {'该项表述正确，见解析' if L in a else '干扰项'}")
-    # 结论句如果已经当作正确项理由，就不再多写一行，避免重复
+            lines.append(f"{L}{mark} {'表述正确，详见下方' if L in a else '本题不选，理由见下方'}")
+
     if concl and any(concl in ln for ln in lines):
         concl = ""
 
     rest = [s for s in sents if s not in used]
-    rest_txt = re.sub(r"^\s*[。；,，]+", "", "".join(rest)).strip()
-    if len(rest_txt) > 380:
-        rest_txt = rest_txt[:380].rstrip("，。；") + "…"
+    det_txt = "".join(detail)
+    def norm(x):
+        return re.sub(r"[^\u4e00-\u9fff]", "", FILLER.sub("", x))
+    det_norm = {norm(d) for d in detail}
+    rest = [x for x in rest if len(x) > 12 and norm(x) not in det_norm
+            and not any(norm(x)[:20] and norm(x)[:20] in d for d in det_norm)]
+    rest_txt = despac(re.sub(r"^\s*[。；,，]+", "", "".join(rest)).strip())
+    if rest_txt and det_txt and rest_txt.strip("。") in det_txt:
+        rest_txt = ""
+    if len(rest_txt) > 600:
+        cut = rest_txt[:600]
+        i = max(cut.rfind("。"), cut.rfind("；"))
+        rest_txt = (cut[:i + 1] if i >= 300 else cut.rstrip("，。；") + "…")
+    rest_txt = hl(rest_txt) if rest_txt else ""
+
     parts = []
-    lines = [despac(x) for x in lines]
-    rest_txt = despac(rest_txt)
     concl = despac(concl) if concl else concl
     if concl and not any(concl[:12] and concl[:12] in ln for ln in lines):
-        parts.append("\x01" + short(concl, 64) + "\x02")
-    parts.extend(lines)
+        parts.append("\x01" + short(concl, 48) + "\x02")
+    parts.extend(despac(x) for x in lines)
+    if detail:
+        parts.append("【逐项详解】")
+        parts.extend(detail)
     if rest_txt:
+        parts.append("【本题思路】")
         parts.append(rest_txt)
     return {"a": a, "e": "\n".join(parts)}
 
