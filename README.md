@@ -4,10 +4,25 @@
 
 ## 👉 开始刷题
 
-**[点这里打开刷题页](https://flypig1225.github.io/study/)**（在线版，手机/电脑都能用）
+收录 2005–2026 共 **1099 道客观题**，36 个章节，判分 + 解析 + 错题本按天复习。
 
-或下载单文件离线版：[`刷题/法硕基础课-真题刷题.html`](刷题/法硕基础课-真题刷题.html)（1.1 MB，双击即用，不联网）
-· 收录 2005–2026 共 **1099 道客观题**，36 个章节，判分 + 解析 + 错题本按天复习
+### 方式一：下载后双击（最稳，离线可用）
+
+**[⬇︎ 下载刷题页 HTML](https://github.com/Flypig1225/study/raw/arena/59be2c94-study/%E5%88%B7%E9%A2%98/%E6%B3%95%E7%A1%95%E5%9F%BA%E7%A1%80%E8%AF%BE-%E7%9C%9F%E9%A2%98%E5%88%B7%E9%A2%98.html)**
+（约 1.1 MB · 单文件 · 无外部依赖 · 手机电脑都能开）
+
+下载 → 双击 → 浏览器打开即可。做题进度存在浏览器本地，不联网、不上传。
+
+### 方式二：在线直接刷（需在仓库设置里开一次 GitHub Pages）
+
+1. 打开仓库 **Settings → Pages**
+2. Source 选 **Deploy from a branch**，Branch 选 `arena/59be2c94-study`，目录选 `/ (root)`，Save
+3. 等 1 分钟，访问 **<https://flypig1225.github.io/study/>**
+
+### 方式三：第三方直链渲染（不想开 Pages 时）
+
+- <https://raw.githack.com/Flypig1225/study/arena/59be2c94-study/%E5%88%B7%E9%A2%98/%E6%B3%95%E7%A1%95%E5%9F%BA%E7%A1%80%E8%AF%BE-%E7%9C%9F%E9%A2%98%E5%88%B7%E9%A2%98.html>
+- <https://htmlpreview.github.io/?https://github.com/Flypig1225/study/blob/arena/59be2c94-study/%E5%88%B7%E9%A2%98/%E6%B3%95%E7%A1%95%E5%9F%BA%E7%A1%80%E8%AF%BE-%E7%9C%9F%E9%A2%98%E5%88%B7%E9%A2%98.html>
 
 ## 做了什么
 
