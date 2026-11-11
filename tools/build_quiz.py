@@ -37,17 +37,27 @@ def clean_expl(text):
     return t.strip()
 
 
+EXCLUDE_PATH = os.path.join(ROOT, "data", "exclude_questions.json")
+
+
 def build_data(tagged, answers, allow_missing=False):
     missing = []
+    excluded = set()
+    if os.path.exists(EXCLUDE_PATH):
+        excluded = set(json.load(open(EXCLUDE_PATH, encoding="utf-8")))
+
     units = {}
     for q in tagged:
         if q["type"] not in TCODE:
             continue
         key = f"{q['year']}-{q['num']}"
+        if key in excluded:
+            continue
         ans = answers.get(key) or {}
         a = norm_answer(ans.get("a"))
         if not a:
             missing.append(key)
+            continue
         unit = units.setdefault((q["subject"], q["node"]), {
             "sub": q["subject"], "name": q["node"], "score": 0, "qs": []})
         unit["score"] += q["score"]
@@ -62,8 +72,10 @@ def build_data(tagged, answers, allow_missing=False):
             "k": q["node"],
         })
     if missing and not allow_missing:
-        print(f"缺少 {len(missing)} 条答案，先补 data/answers.json（示例：{missing[:5]}）")
-        sys.exit(1)
+        from collections import Counter
+        by_year = Counter(k.split("-")[0] for k in missing)
+        print(f"跳过 {len(missing)} 道无答案的题（按年：{dict(sorted(by_year.items()))}）")
+        print(f"   示例：{missing[:5]}")
 
     data = []
     for (subj, node), u in units.items():
@@ -92,14 +104,21 @@ def main():
     payload = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     payload = payload.replace("</", "<\\/")
     html = shell.replace("/*__QUIZ_DATA__*/", payload)
-    with open(OUT, "w", encoding="utf-8") as f:
-        f.write(html)
 
     nq = sum(len(u["qs"]) for u in data)
+    covered = sorted({q["y"] for u in data for q in u["qs"]})
+    all_years = sorted({q["year"] for q in tagged if q["type"] in TCODE})
+    gap = [y for y in all_years if y not in covered]
+    note = f"当前收录 {nq} 题（{covered[0]}–{covered[-1]}）。"
+    if gap:
+        note += "未收录：" + "、".join(f"{y} 年" for y in gap) + "（解析未到齐）。"
+    html = html.replace("__COVERAGE__", note)
+    with open(OUT, "w", encoding="utf-8") as f:
+        f.write(html)
     print(f"章节 {len(data)} 个，题目 {nq} 道 -> {os.path.relpath(OUT, ROOT)} "
           f"（{len(html)/1024/1024:.2f} MB）")
-    if missing:
-        print(f"警告：{len(missing)} 题答案为空，判分不可用：{missing[:5]} …")
+    if gap:
+        print(f"未收录年份：{gap}")
 
 
 if __name__ == "__main__":

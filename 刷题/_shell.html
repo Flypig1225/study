@@ -167,7 +167,7 @@ function home(keepScroll){
   <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
   <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题本（${wr} 题）</button></div>`;
   h+=`<div class="card"><div id="ul"></div></div>`;
-  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div>
+  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div><div style="margin-top:6px">__COVERAGE__</div>
   <div class="foot" style="margin-top:10px"><button id="rst">清空全部进度</button></div></div></div>`;
   app.innerHTML=h;
   const ul=document.getElementById('ul');let rk=0;

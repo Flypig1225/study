@@ -18,11 +18,15 @@
 materials/
   法硕非法学-基础课/     22 套真题 PDF（2005–2026，统一命名）
   text/                  每套纯文本（11 套经 OCR 重建，分栏已重排）
+  answer_text/           20 套答案解析的纯文本（2005–2009、2011–2022、2024–2026）
   INDEX.md               素材索引 + 卷面结构
 data/
   questions.json         1302 道结构化题目
   tagged.json            题目 + 知识板块标签
   node_overrides.json    人工校正标签
+  answers.json           客观题答案 + 解析（由解析 PDF 自动抽取，999 题）
+  answers_manual.json    人工补录答案（2024 答案表、OCR 粘连行）
+  exclude_questions.json 无官方答案、不进刷题页的题（2013-22）
   manual_questions.json  OCR 缺行的人工补齐题
   option_fixes.json      OCR 丢行的选项补录（1 题）
 分析/
@@ -35,6 +39,7 @@ tools/
   parse_exam.py          按年份卷面结构表结构化题目
   classify.py            板块打标 + 统计
   recurrence.py          考点复现率检验（考点 × 年份矩阵）
+  parse_answers.py       解析 PDF → data/answers.json（多版式正则 + 人工补录合并）
   build_quiz.py          tagged.json + answers.json → 刷题/法硕基础课-真题刷题.html
 刷题/
   _shell.html            刷题页外壳（模板骨架，含全部 JS/CSS，去掉科目专属数据）
@@ -48,7 +53,8 @@ pip install --break-system-packages pypdf pymupdf rapidocr-onnxruntime opencv-py
 bash tools/run_extract.sh      # PDF → materials/text/（首次约 15 分钟，纯 OCR 部分）
 python3 tools/parse_exam.py    # → data/questions.json
 python3 tools/classify.py      # → data/tagged.json + 板块统计
-python3 tools/build_quiz.py    # → 刷题/法硕基础课-真题刷题.html（需 data/answers.json）
+python3 tools/parse_answers.py # → data/answers.json
+python3 tools/build_quiz.py    # → 刷题/法硕基础课-真题刷题.html
 ```
 
 ## 数据说明
@@ -56,3 +62,5 @@ python3 tools/build_quiz.py    # → 刷题/法硕基础课-真题刷题.html（
 - 22 套试卷每年 150 分（刑法 75 + 民法 75），主观题恒定 90 分（60%）。
 - 卷面结构三次变化：2005–2010（60 题、分科两块）、2011–2017（混编、仍含辨析）、2018–2025（取消辨析，简答每题 10 分）。
 - 2026 年真题（2025-12 考）已入库；2027 版《考试大纲》逐条变化未核实，押题以此为限。
+- 刷题页当前收录 **999 道客观题**（2005–2009、2011–2022、2024–2026）；2010、2023 两年的解析尚未入库，
+  2013 年第 22 题官方无答案（已排除）。2024 年只有答案表、没有逐题解析。
