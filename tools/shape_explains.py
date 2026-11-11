@@ -304,33 +304,17 @@ def shape(ans, options):
     if concl and any(concl in ln for ln in lines):
         concl = ""
 
-    rest = [s for s in sents if s not in used]
-    det_txt = "".join(detail)
-    def norm(x):
-        return re.sub(r"[^\u4e00-\u9fff]", "", FILLER.sub("", x))
-    det_norm = {norm(d) for d in detail}
-    rest = [x for x in rest if len(x) > 12 and norm(x) not in det_norm
-            and not any(norm(x)[:20] and norm(x)[:20] in d for d in det_norm)]
-    rest_txt = despac(re.sub(r"^\s*[。；,，]+", "", "".join(rest)).strip())
-    if rest_txt and det_txt and rest_txt.strip("。") in det_txt:
-        rest_txt = ""
-    if len(rest_txt) > 600:
-        cut = rest_txt[:600]
+    # 底部解析：直接用原文（去 OCR 空格、法条罪名红字），不再只放“剩余内容”
+    orig = despac(re.sub(r"\s+", " ", text)).strip()
+    orig = re.sub(r"(?<=[。；])\s*(?![”\"])", "\n", orig).strip()   # 一句一行，读起来清楚
+    if len(orig) > 1500:
+        cut = orig[:1500]
         i = max(cut.rfind("。"), cut.rfind("；"))
-        rest_txt = (cut[:i + 1] if i >= 300 else cut.rstrip("，。；") + "…")
-    rest_txt = hl(rest_txt) if rest_txt else ""
+        orig = cut[:i + 1] if i > 700 else cut.rstrip("，。；") + "…"
+    orig = hl(orig)
 
-    parts = []
-    concl = despac(concl) if concl else concl
-    if concl and not any(concl[:12] and concl[:12] in ln for ln in lines):
-        parts.append("\x01" + short(concl, 48) + "\x02")
-    parts.extend(despac(x) for x in lines)
-    if detail:
-        parts.append("【逐项详解】")
-        parts.extend(detail)
-    if rest_txt:
-        parts.append("【本题思路】")
-        parts.append(rest_txt)
+    parts = [despac(x) for x in lines]
+    parts.append(orig)                    # 底部就是原解析全文
     return {"a": a, "e": "\n".join(parts)}
 
 

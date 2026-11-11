@@ -69,7 +69,7 @@ def build_data(tagged, answers, allow_missing=False):
             "s": q["stem"].strip(),
             "o": [q["options"][k] for k in "ABCD"],
             "a": a,
-            "e": clean_expl(ans.get("e")),
+            "e": clean_expl(ans.get("e")) or "本题官方未给出解析，考点见下方。",
             "k": q["node"],
         })
     if missing and not allow_missing:

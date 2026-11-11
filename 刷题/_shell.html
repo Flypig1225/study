@@ -283,7 +283,7 @@ function showAfter(q,sel,ok){
   if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题本':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题本':'加入错题本')}</button>`;}
   const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
   const ex=q.e?fmtExp(q.e,mk,hasOE):'';
-  if(ex)h+=`<div class="box"><h4>${hasOE?'解析详解':'解析'}</h4>${ex}</div>`;
+  if(ex)h+=`<div class="box"><h4>解析</h4>${ex}</div>`;
   if(q.k)h+=`<div class="box book"><h4>考点</h4>${fmtBook(q)}</div>`;
   document.getElementById('after').innerHTML=h;
   document.getElementById('nx').onclick=goNext;
