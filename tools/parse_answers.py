@@ -31,6 +31,9 @@ def norm(t):
 def answer_section(t):
     """2005-2010 卷：前半是题目，后半才是答案解析。"""
     occ = [m.start() for m in re.finditer(r"答\s*案?\s*解\s*析", t)]
+    if not occ:
+        # 2010 卷标题写「真题答案详解」；只在文首出现才算标题，避免正文里的「详解」把小标题当成答案区
+        occ = [m.start() for m in re.finditer(r"答\s*案?\s*详\s*解", t) if m.start() < 200]
     if len(occ) >= 2:
         return t[occ[-1]:]
     if occ:
@@ -40,6 +43,7 @@ def answer_section(t):
 
 def split_blocks(seg):
     """按行首题号切块；同一题号只保留第一次出现。"""
+    seg = re.sub(r"(?m)^(\s*)(\d{1,2})\s+[lI](\s*[.、．,，:：])", r"\g<1>\g<2>1\g<3>", seg)  # "5 I." = 51
     seg = re.sub(r"(?m)^(\s*)[lI](\s*[.、．,，:：])", r"\g<1>1\g<2>", seg)  # OCR 的 "l." / "I." = 第 1 题
     ms = list(re.finditer(r"(?m)^\s*(\d(?:\s?\d)?)\s*[.、．,，:：]\s*", seg))
     blocks, seen = {}, set()
@@ -107,6 +111,29 @@ def strip_marks(body, m):
     return t.strip()
 
 
+
+def parse_speed_table(t):
+    """2023 卷：『选择题答案速查』是「题号行 + 答案行」的表格，题号 OCR 常错位，按位置对齐。"""
+    i = t.find("答案速查")
+    if i < 0:
+        return {}
+    seg = t[i:t.find("简答题", i) if t.find("简答题", i) > 0 else i + 1500]
+    lines = [x.strip() for x in seg.split("\n") if x.strip()]
+    out, pending = {}, None
+    for ln in lines:
+        toks = ln.split()
+        if all(x.isdigit() for x in toks) and len(toks) >= 5:
+            pending = toks
+            continue
+        if pending and all(re.fullmatch(r"[A-D]{1,4}", x) for x in toks) and len(toks) == len(pending):
+            nums = [int(x) for x in pending]
+            base = (min(nums) - 1) // 10 * 10 + 1
+            clean = list(range(base, base + len(nums)))       # 以位置为准，抗 OCR 题号错位
+            for n, a in zip(clean, toks):
+                out[n] = "".join(sorted(set(a)))
+            pending = None
+    return out
+
 def main():
     tagged_path = os.path.join(ROOT, "data", "tagged.json")
     tagged = json.load(open(tagged_path, encoding="utf-8"))
@@ -120,16 +147,24 @@ def main():
         year = int(os.path.basename(path)[:-4])
         if year not in expect:
             continue
-        seg = answer_section(norm(open(path, encoding="utf-8").read()))
+        raw = norm(open(path, encoding="utf-8").read())
+        speed = parse_speed_table(raw)
+        seg = answer_section(raw)
         blocks = split_blocks(seg)
         ok = miss = bad = 0
         for num, qtype in expect[year].items():
             body = blocks.get(num)
             if not body:
+                if num in speed:
+                    out[f"{year}-{num}"] = {"a": speed[num], "e": ""}
+                    continue
                 miss += 1
                 continue
             letters, m = find_answer(body, qtype)
             if not letters:
+                if num in speed:
+                    out[f"{year}-{num}"] = {"a": speed[num], "e": strip_marks(body, None)[:1200]}
+                    continue
                 miss += 1
                 continue
             ok += 1
@@ -145,7 +180,10 @@ def main():
         for k, v in manual.items():
             if k.startswith("_"):
                 continue
-            out.setdefault(k, {}).update(v)
+            cur = out.setdefault(k, {})
+            for kk, vv in v.items():
+                if vv or kk not in cur:      # 人工值只在非空时覆盖，避免清掉已抽到的解析
+                    cur[kk] = vv
         print(f"人工补录 {len(manual)} 条")
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
