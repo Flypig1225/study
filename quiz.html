@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="法硕刷题">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fdb'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-weight='700' fill='%23fff' font-family='sans-serif'%3E法%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fdb'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='34' font-weight='700' fill='%23fff' font-family='sans-serif'%3E法%3C/text%3E%3C/svg%3E">
 <title>法硕（非法学）专业基础课 真题刷题</title>
 <style>
 :root{--bg:#f5f5f2;--card:#fff;--ink:#1d1d1f;--sub:#6b6b70;--line:#e3e3e0;--acc:#2f6fdb;--ok:#1f9d55;--okbg:#e7f6ec;--bad:#d64545;--badbg:#fdeaea;--warn:#b7791f}
@@ -80,9 +84,23 @@ header h1{font-size:19px;margin:0;flex:1}
 .box.note{border-color:#e8c48a}
 .empty{text-align:center;color:var(--sub);padding:30px 0}
 .warnbar{background:#fff4e0;color:#7a5410;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
-textarea{width:100%;height:90px;font-size:12px;border:1px solid var(--line);border-radius:8px;padding:8px}
+textarea{width:100%;height:90px;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px;font-family:monospace}
 .foot{display:flex;gap:8px;flex-wrap:wrap}
-.foot button{flex:1;min-width:120px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px;font-size:14px;cursor:pointer}
+.foot button,.foot label{flex:1;min-width:120px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px;font-size:14px;cursor:pointer;text-align:center;color:var(--ink)}
+.syncrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.syncstat{font-size:13.5px;color:var(--sub);flex:1;min-width:180px}
+.syncstat b{color:var(--ink)}
+.syncbtns{display:flex;gap:6px;flex:none}
+.syncbtns button,.smbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 11px;font-size:13px;cursor:pointer}
+.smbtn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+.syncpanel{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.syncsec{margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.syncsec:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.syncsec h4{margin:0 0 6px;font-size:14px;color:var(--ink)}
+.syncin{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:16px;margin:4px 0 8px;background:#fafaf8;color:var(--ink)}
+.syncmsg{font-size:13px;margin-top:6px;padding:6px 10px;border-radius:8px;background:#f4f5f7;color:var(--ink)}
+.syncmsg.ok{background:var(--okbg);color:var(--ok)}
+.syncmsg.bad{background:var(--badbg);color:var(--bad)}
 .wb{padding:10px 0;border-top:1px solid var(--line);font-size:15px}
 .wb:first-child{border-top:0}
 .wb .a{color:var(--ok);font-weight:600}
@@ -129,12 +147,118 @@ const TN={'判':'判断','单':'单选','多':'多选'};
 // index
 const Q={};D.forEach((u,ui)=>{u.ui=ui;u.qs.forEach((q,qi)=>{q.u=ui;q.qi=qi;Q[q.id]=q;})});
 // storage
-const KEY='fsjc_v1';let canSave=true;let S;
+const KEY='fsjc_v1';const SYNC_KEY='fsjc_sync_v1';const GIST_FILE='fsjc_progress_v1.json';
+let canSave=true;let S;
 try{S=JSON.parse(localStorage.getItem(KEY)||'null');localStorage.setItem(KEY+'_t','1');}catch(e){canSave=false;}
-if(!S||!S.q)S={q:{},sub:'全部',drop:false};
+if(!S||!S.q)S={q:{},sub:'全部',drop:false,clearedAt:0};
+if(!S.clearedAt)S.clearedAt=0;
 if(!S.v2){const now=Date.now();for(const id in S.q){if(S.q[id].length<5)S.q[id][4]=now;}S.v2=1;}
-function save(){if(!canSave)return;try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
-// 进度只存在本机浏览器（localStorage），不做任何联网上传。
+let SYNC={token:'',gistId:'',lastSync:0,auto:true};
+if(canSave){try{const sc=JSON.parse(localStorage.getItem(SYNC_KEY)||'null');if(sc&&typeof sc==='object')SYNC=Object.assign(SYNC,sc);}catch(e){}}
+function saveSyncCfg(){if(!canSave)return;try{localStorage.setItem(SYNC_KEY,JSON.stringify(SYNC));}catch(e){}}
+let syncOpen=false,syncBusy=false,syncTimer=null,lastAutoTry=0,syncMsg={cls:'',text:''};
+function save(pushCloud){
+  if(!canSave)return;
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  if(pushCloud&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false){
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(()=>syncNow(true),1500);
+  }
+}
+function b64e(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin);}
+function b64d(b64){const bin=atob(b64.trim());const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder().decode(bytes);}
+function normRec(r){if(!Array.isArray(r)||r.length<4)return null;return [+r[0]||0,+r[1]||0,+r[2]||0,+r[3]||0,+r[4]||0];}
+function mergeProgress(localState,rawRemote){
+  if(!rawRemote||typeof rawRemote!=='object')throw new Error('数据格式无效');
+  const rq=(rawRemote.q&&typeof rawRemote.q==='object')?rawRemote.q:(Object.keys(rawRemote).some(k=>Q[k])?rawRemote:null);
+  if(!rq)throw new Error('未找到题目进度字段');
+  const lCleared=+localState.clearedAt||0;
+  const rCleared=+(rawRemote.clearedAt||rawRemote.c)||0;
+  const clearedAt=Math.max(lCleared,rCleared);
+  const lq=localState.q||{};
+  const nq={};
+  const ids=new Set([...Object.keys(lq),...Object.keys(rq)]);
+  let fromRemote=0,keptLocal=0,needPush=clearedAt>rCleared;
+  for(const id of ids){
+    if(!Q[id])continue;
+    const l=normRec(lq[id]),r=normRec(rq[id]);
+    let pick=null,pickedRemote=false,localNewer=false;
+    if(l&&r){
+      if(r[4]>l[4]||(r[4]===l[4]&&(r[0]!==l[0]||r[1]!==l[1]||r[2]!==l[2]||r[3]!==l[3])&&(r[0]>l[0]||r[3]>l[3]))){pick=r;pickedRemote=true;}
+      else{pick=l;if(l[4]>r[4])localNewer=true;}
+    }else if(r){pick=r;pickedRemote=true;}
+    else{pick=l;localNewer=true;}
+    if(!pick||(clearedAt>0&&pick[4]<=clearedAt))continue;
+    nq[id]=pick;
+    if(pickedRemote)fromRemote++;else{keptLocal++;if(localNewer)needPush=true;}
+  }
+  return {state:{q:nq,sub:localState.sub||'全部',drop:!!localState.drop,v2:1,clearedAt},fromRemote,keptLocal,totalAfter:Object.keys(nq).length,needPush,remoteCleared:rCleared};
+}
+function fmtTime(ms){if(!ms)return '';const d=new Date(ms);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;}
+function setSyncMsg(cls,text){syncMsg={cls,text};const el=document.getElementById('syncmsg');if(el){el.className='syncmsg'+(cls?' '+cls:'');el.textContent=text;el.style.display=text?'block':'none';}}
+function exportProgressObj(){return {v:2,c:S.clearedAt||0,updatedAt:Date.now(),q:S.q};}
+function exportProgressCode(){return 'FSJC1:'+b64e(JSON.stringify(exportProgressObj()));}
+function parseImportPayload(raw){
+  const t=(raw||'').trim();if(!t)throw new Error('请先粘贴进度码或选择文件');
+  if(t.startsWith('FSJC1:'))return JSON.parse(b64d(t.slice(6)));
+  return JSON.parse(t);
+}
+function applyImportText(raw){
+  const obj=parseImportPayload(raw);
+  const res=mergeProgress(S,obj);
+  S=res.state;save(true);
+  setSyncMsg('ok',`合并完成：吸收对方较新 ${res.fromRemote} 题，保留本地 ${res.keptLocal} 题，当前共 ${res.totalAfter} 条记录。`);
+  home(true);
+}
+async function syncNow(silent){
+  if(!canSave||syncBusy)return;
+  if(!SYNC.token){if(!silent)setSyncMsg('bad','请先填写 GitHub Token');return;}
+  if(typeof fetch!=='function'){if(!silent)setSyncMsg('bad','当前环境不支持联网请求');return;}
+  syncBusy=true;lastAutoTry=Date.now();
+  if(!silent)setSyncMsg('','正在同步云端进度…');
+  const hdr={'Authorization':'Bearer '+SYNC.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  try{
+    if(!SYNC.gistId){
+      const cr=await fetch('https://api.github.com/gists',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},hdr),body:JSON.stringify({description:'法硕刷题进度同步（自动生成）',public:false,files:{[GIST_FILE]:{content:JSON.stringify(exportProgressObj())}}})});
+      if(!cr.ok){throw new Error(cr.status===401||cr.status===403?'Token 无效或缺少 gist 权限':'创建云端空间失败（HTTP '+cr.status+'）');}
+      const gj=await cr.json();
+      SYNC.gistId=gj.id;SYNC.lastSync=Date.now();saveSyncCfg();
+      setSyncMsg('ok',`已创建私人云端同步空间（Gist ID: ${SYNC.gistId}）并上传当前进度。`);
+      if(view.name==='home')home(true);
+      return;
+    }
+    const gr=await fetch('https://api.github.com/gists/'+encodeURIComponent(SYNC.gistId),{cache:'no-store',headers:hdr});
+    if(!gr.ok){throw new Error(gr.status===401||gr.status===403?'Token 无效或缺少 gist 权限':gr.status===404?'找不到该 Gist ID':'拉取失败（HTTP '+gr.status+'）');}
+    const gj=await gr.json();
+    const fileObj=gj.files&&gj.files[GIST_FILE];
+    let needPush=!fileObj||!fileObj.content,fromRemote=0,keptLocal=0;
+    if(fileObj&&fileObj.content){
+      const remoteObj=JSON.parse(fileObj.content);
+      const res=mergeProgress(S,remoteObj);
+      fromRemote=res.fromRemote;keptLocal=res.keptLocal;needPush=needPush||res.needPush;
+      if(fromRemote>0||res.state.clearedAt>(S.clearedAt||0)){
+        S=res.state;save(false);
+      }
+    }
+    if(needPush){
+      const pr=await fetch('https://api.github.com/gists/'+encodeURIComponent(SYNC.gistId),{method:'PATCH',headers:Object.assign({'Content-Type':'application/json'},hdr),body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(exportProgressObj())}}})});
+      if(!pr.ok){throw new Error('上传合并结果失败（HTTP '+pr.status+'）');}
+    }
+    SYNC.lastSync=Date.now();saveSyncCfg();
+    const summary=fromRemote>0?`已同步：吸收云端 ${fromRemote} 题，保留本地 ${keptLocal} 题。`:needPush?'已将本地最新进度同步至云端。':'云端已是最新进度。';
+    setSyncMsg('ok',summary);
+    if(view.name==='home')home(true);
+  }catch(err){
+    setSyncMsg('bad',(err&&err.message)||'同步失败，本地进度不受影响');
+    if(view.name==='home'){const stEl=document.getElementById('syncstat');if(stEl)stEl.textContent='云同步异常：'+((err&&err.message)||'网络错误');}
+  }finally{syncBusy=false;}
+}
+function copyTextSync(txt,fbEl){
+  let ok=false;
+  if(fbEl){fbEl.value=txt;fbEl.style.display='block';fbEl.focus();fbEl.select();try{ok=document.execCommand('copy');}catch(e){}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).catch(()=>{});}
+  return ok;
+}
 const today=()=>Math.floor((Date.now()+8*36e5)/864e5);  // 北京时间的日期序号，错题本按天计数用
 // st: [status, streak, due, wrongCount]  status 1=一次做对 2=错题本 3=错题已掌握
 const st=id=>{const s=S.q[id];return s&&s[0]?s:undefined};  // status 0 = 这一节被重置过，当作没做
@@ -171,7 +295,39 @@ function home(keepScroll){
   <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
   <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题本（${wr} 题）</button></div>`;
   h+=`<div class="card"><div id="ul"></div></div>`;
-  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>当前收录 1099 道客观真题（2005–2026年，共 36 个章节单元）。 所有题目均配逐项精析与现行法条/考点依据，涉及旧法修订的题均附「新法提示」。<br>进度只保存在这台设备、这个浏览器里，不联网、不上传、也不会和其他设备关联。换浏览器或清理浏览器数据，进度就没了。</div>
+  const cloudOn=!!(SYNC.token&&SYNC.gistId);
+  const syncLabel=cloudOn?`云同步：<b>已连接</b>${SYNC.lastSync?' · 上次 '+fmtTime(SYNC.lastSync):''}`:'跨设备同步（电脑 ↔ 手机）：未配置云同步';
+  h+=`<div class="card"><div class="syncrow"><div class="syncstat" id="syncstat">${syncLabel}</div><div class="syncbtns">${cloudOn?'<button class="smbtn pri" id="syncnow">立即同步</button>':''}<button class="smbtn" id="synctog">${syncOpen?'收起':'同步设置'}</button></div></div>`;
+  if(syncOpen){
+    h+=`<div class="syncpanel">
+      <div class="syncsec">
+        <h4>方式一：GitHub 云端自动同步（配置一次，之后打开网页自动合并）</h4>
+        <div class="hint" style="margin:0 0 6px">需一个只勾选 <b>gist</b> 权限的 GitHub Token。第一台设备只需填 Token（Gist ID 留空）点「连接 / 自动创建」；第二台设备粘贴配对口令或填入同一组 Token + Gist ID 即可自动互相同步。</div>
+        <input class="syncin" id="stoken" type="password" placeholder="GitHub Token（仅需 gist 权限）" value="${esc(SYNC.token||'')}">
+        <input class="syncin" id="sgist" type="text" placeholder="Gist ID（首次留空将自动创建私人空间）" value="${esc(SYNC.gistId||'')}">
+        <div class="foot">
+          <button id="ssave" style="background:var(--acc);color:#fff;border-color:var(--acc)">${cloudOn?'保存并立即同步':'连接 / 自动创建'}</button>
+          ${cloudOn?'<button id="spair">复制配对口令（给手机用）</button><button id="sdisc">断开云同步</button>':'<button id="spairin">粘贴配对口令</button>'}
+        </div>
+        <textarea id="spairbox" style="display:none;margin-top:8px" placeholder="在这里粘贴从另一台设备复制的 FSJCPAIR: 配对口令，再点下方确认"></textarea>
+        <button class="smbtn pri" id="spairgo" style="display:none;margin-top:6px">确认配对并同步</button>
+      </div>
+      <div class="syncsec">
+        <h4>方式二：免账号同步码 / 文件互传（微信、AirDrop、备忘录）</h4>
+        <div class="hint" style="margin:0 0 6px">按每题最新时间戳智能合并，不会覆盖你在另一台设备刚做的新题。</div>
+        <div class="foot">
+          <button id="expcode">生成并复制进度码</button>
+          <button id="expfile">下载进度文件</button>
+          <label for="impfile">导入文件合并<input id="impfile" type="file" accept=".json,application/json,text/plain" style="display:none"></label>
+        </div>
+        <textarea id="syncio" style="margin-top:8px" placeholder="把另一台设备生成的 FSJC1:... 进度码粘贴到这里，点下方「合并进度码」"></textarea>
+        <button class="smbtn pri" id="impcode" style="margin-top:6px">合并进度码</button>
+      </div>
+      <div class="syncmsg${syncMsg.cls?' '+syncMsg.cls:''}" id="syncmsg" style="display:${syncMsg.text?'block':'none'}">${esc(syncMsg.text||'')}</div>
+    </div>`;
+  }
+  h+=`</div>`;
+  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则</div><div class="hint" style="margin:0">做错的题进错题本。错题本里的题要连续做对两次才移出，中间做错一次就从 0 重新数。每刷一轮，每道错题只出一次，顺序和刷新题一样按重要性排。第一次就做对的题不再出现。<br>当前收录 1099 道客观真题（2005–2026年，共 36 个章节单元）。 所有题目均配逐项精析与现行法条/考点依据，涉及旧法修订的题均附「新法提示」。<br>进度默认保存在本机浏览器里；如需在电脑和手机间同步，可使用上方「跨设备同步」。</div>
   <div class="foot" style="margin-top:10px"><button id="rst">清空全部进度</button></div></div></div>`;
   app.innerHTML=h;
   const ul=document.getElementById('ul');let rk=0;
@@ -184,17 +340,69 @@ function home(keepScroll){
     el.onclick=()=>startSess('unit',u.ui);ul.appendChild(el);
     const rb=el.querySelector('.rs');if(rb)rb.onclick=e=>{e.stopPropagation();resetUnit(u);};
   });
-  app.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.sub=t.dataset.sub;save();home();});
+  app.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.sub=t.dataset.sub;save(false);home();});
   document.getElementById('go').onclick=()=>startSess('main');
   document.getElementById('wb').onclick=wrongBook;
-  document.getElementById('rst').onclick=()=>{if(confirm('确定清空全部做题记录？只会清空这台设备上的记录，无法恢复。')){S.q={};save();home();}};
+  document.getElementById('rst').onclick=()=>{if(confirm('确定清空全部做题记录？清空后将无法恢复（开启云同步时也会同步清空）。')){S.q={};S.clearedAt=Date.now();save(true);home();}};
+  document.getElementById('synctog').onclick=()=>{syncOpen=!syncOpen;home(true);};
+  const sn=document.getElementById('syncnow');if(sn)sn.onclick=()=>syncNow(false);
+  if(syncOpen){
+    document.getElementById('ssave').onclick=()=>{
+      SYNC.token=(document.getElementById('stoken').value||'').trim();
+      SYNC.gistId=(document.getElementById('sgist').value||'').trim();
+      SYNC.auto=true;saveSyncCfg();syncNow(false);
+    };
+    const sp=document.getElementById('spair');if(sp)sp.onclick=()=>{
+      const pb=document.getElementById('spairbox');
+      const code='FSJCPAIR:'+b64e(JSON.stringify({t:SYNC.token,g:SYNC.gistId}));
+      const copied=copyTextSync(code,pb);
+      setSyncMsg('ok',(copied?'已复制配对口令！':'请长按全选复制上方框内配对口令：')+'（内含 Token，仅限发送到你自己的另一台设备并点「粘贴配对口令」）。');
+    };
+    const sdisc=document.getElementById('sdisc');if(sdisc)sdisc.onclick=()=>{
+      SYNC={token:'',gistId:'',lastSync:0,auto:true};saveSyncCfg();setSyncMsg('','已断开云端同步（本地做题记录仍保留）。');home(true);
+    };
+    const spin=document.getElementById('spairin');if(spin)spin.onclick=()=>{
+      document.getElementById('spairbox').style.display='block';
+      document.getElementById('spairgo').style.display='inline-block';
+      document.getElementById('spairbox').focus();
+    };
+    const spgo=document.getElementById('spairgo');if(spgo)spgo.onclick=()=>{
+      try{
+        const raw=(document.getElementById('spairbox').value||'').trim();
+        if(!raw.startsWith('FSJCPAIR:'))throw new Error('口令需以 FSJCPAIR: 开头');
+        const cfg=JSON.parse(b64d(raw.slice(9)));
+        if(!cfg.t||!cfg.g)throw new Error('配对口令不完整');
+        SYNC.token=cfg.t;SYNC.gistId=cfg.g;SYNC.auto=true;saveSyncCfg();syncNow(false);
+      }catch(e){setSyncMsg('bad',(e&&e.message)||'配对口令无效');}
+    };
+    document.getElementById('expcode').onclick=()=>{
+      const io=document.getElementById('syncio');const code=exportProgressCode();
+      const copied=copyTextSync(code,io);
+      setSyncMsg('ok',copied?`已生成并复制进度码（含 ${Object.keys(S.q).length} 条记录），发送给另一台设备后粘贴合并即可。`:`已生成进度码（含 ${Object.keys(S.q).length} 条记录），请全选复制上方文本框内容。`);
+    };
+    document.getElementById('expfile').onclick=()=>{
+      const blob=new Blob([JSON.stringify(exportProgressObj(),null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');
+      const dt=new Date();const ds=`${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}`;
+      a.href=url;a.download=`fsjc-progress-${ds}.json`;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setSyncMsg('ok','已导出进度文件，发送到另一台设备并用「导入文件合并」即可。');
+    };
+    document.getElementById('impfile').onchange=e=>{
+      const f=e.target.files&&e.target.files[0];if(!f)return;
+      const r=new FileReader();r.onload=()=>{try{applyImportText(r.result);}catch(err){setSyncMsg('bad',(err&&err.message)||'导入失败');}};r.readAsText(f);
+    };
+    document.getElementById('impcode').onclick=()=>{
+      try{applyImportText(document.getElementById('syncio').value);}catch(err){setSyncMsg('bad',(err&&err.message)||'进度码格式有误');}
+    };
+  }
   if(keepScroll!==true)window.scrollTo(0,0);
 }
 function resetUnit(u){
   const ids=u.qs.map(q=>q.id).filter(id=>st(id));if(!ids.length)return;
   if(!confirm(`重置「${u.name}」？\n这一节已做的 ${ids.length} 题会全部变回没做过（也会移出错题本）。`))return;
   const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
-  save();home(true);
+  save(true);home(true);
 }
 function startWrong(){startSess('wrong');}
 function startSess(mode,unit){view={name:'quiz'};sess={mode,unit,queue:mode==='wrong'?(a=>{for(let i=a.length-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;})(dueList()):[],total:0,n:0,right:0,cur:null,answered:false,sel:[],hist:[],view:null};sess.total=sess.queue.length;nextQ();}
@@ -256,7 +464,7 @@ function submit(){
   else if(s[0]===2){if(ok){if(s[2]!==d){s[1]++;if(s[1]>=2)s[0]=3;}}else{s[1]=0;s[3]++;}s[2]=d;s[4]=now;}  // 错题本：每天最多算一次，连续两天做对才移出
   else{if(!ok){S.q[q.id]=[2,0,d,(s[3]||0)+1,now];}}
 
-  save();
+  save(true);
   sess.hist.push({id:q.id,sel:sess.sel.slice()});
   showAfter(q,sess.sel,ok);
 }
@@ -283,7 +491,7 @@ function showAfter(q,sel,ok){
   if(q.k||q.kb!=null)h+=`<div class="box book"><h4>原文</h4>${fmtBook(q)}</div>`;
   document.getElementById('after').innerHTML=h;
   document.getElementById('nx').onclick=goNext;
-  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save();aw.textContent='已加入错题本';aw.disabled=true;};
+  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save(true);aw.textContent='已加入错题本';aw.disabled=true;};
 }
 // 上一题/下一题：上一题只能回看本次已做的题（显示当时的作答和解析，不能改答案）
 function goPrev(){
@@ -329,12 +537,14 @@ function wrongBook(){
 }
 // 键盘不参与做题：没有快捷键，回车/空格也不会触发按钮（防误触），只能点
 document.addEventListener('keydown',e=>{
-  const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&e.target.type==='text'))return;
+  const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&(e.target.type==='text'||e.target.type==='password')))return;
   if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();e.stopPropagation();}
 },true);
-document.addEventListener('keyup',e=>{const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&e.target.type==='text'))return;if(e.key===' '||e.key==='Spacebar'){e.preventDefault();}},true);
+document.addEventListener('keyup',e=>{const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&(e.target.type==='text'||e.target.type==='password')))return;if(e.key===' '||e.key==='Spacebar'){e.preventDefault();}},true);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&canSave&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false&&Date.now()-lastAutoTry>15000)syncNow(true);});
 
 home();
+if(canSave&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false)syncNow(true);
 </script>
 </body>
 </html>

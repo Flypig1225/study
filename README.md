@@ -8,21 +8,21 @@
 
 ### 方式一：下载后双击（最稳，离线可用）
 
-**[⬇︎ 下载刷题页 HTML](https://github.com/Flypig1225/study/raw/arena/59be2c94-study/quiz.html)**
-（约 1.1 MB · 单文件 · 无外部依赖 · 手机电脑都能开）
+**[⬇︎ 下载刷题页 HTML](https://github.com/Flypig1225/study/raw/main/quiz.html)**
+（约 1.5 MB · 单文件 · 无外部依赖 · 手机电脑都能开）
 
-下载 → 双击 → 浏览器打开即可。做题进度存在浏览器本地，不联网、不上传。
+下载 → 双击 → 浏览器打开即可。做题进度默认存在浏览器本地；如需电脑与手机同步，可在页面底部「跨设备同步」配置 GitHub Gist 云同步或使用同步码/文件互传合并。
 
 ### 方式二：在线直接刷（需在仓库设置里开一次 GitHub Pages）
 
 1. 打开仓库 **Settings → Pages**
-2. Source 选 **Deploy from a branch**，Branch 选 `arena/59be2c94-study`，目录选 `/ (root)`，Save
-3. 等 1 分钟，访问 **<https://flypig1225.github.io/study/>**
+2. Source 选 **Deploy from a branch**，Branch 选 **`main`**，目录选 **`/ (root)`**，Save
+3. 等 1 分钟，电脑与手机浏览器直接访问 **<https://flypig1225.github.io/study/>**
 
 ### 方式三：第三方直链渲染（不想开 Pages 时）
 
-- <https://raw.githack.com/Flypig1225/study/arena/59be2c94-study/quiz.html>
-- <https://htmlpreview.github.io/?https://github.com/Flypig1225/study/blob/arena/59be2c94-study/quiz.html>
+- <https://raw.githack.com/Flypig1225/study/main/quiz.html>
+- <https://htmlpreview.github.io/?https://github.com/Flypig1225/study/blob/main/quiz.html>
 
 ## 做了什么
 
