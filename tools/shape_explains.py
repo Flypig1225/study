@@ -16,6 +16,17 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC = os.path.join(ROOT, "data", "answers.json")
 OUT = os.path.join(ROOT, "data", "answers_shaped.json")
+AMEND = os.path.join(ROOT, "data", "answers_amend.json")
+
+# 旧法条名称 → 民法典对应位置（2021.1.1 起合同法、物权法、民法通则、婚姻法、继承法、担保法废止）
+OLD_LAW = [
+    ("合同法", "《民法典》合同编（第463条起）"),
+    ("物权法", "《民法典》物权编（第205条起）"),
+    ("民法通则", "《民法典》总则编及各编相应规定"),
+    ("婚姻法", "《民法典》婚姻家庭编（第1040条起）"),
+    ("继承法", "《民法典》继承编（第1119条起）"),
+    ("担保法", "《民法典》物权编担保物权分编、合同编保证合同"),
+]
 
 OCR_FIX = {"北体": "本题", "教竣": "教唆", "教咬": "教唆", "属千": "属于", "千是": "于是", "植人": "植入"}
 JUNK = [
@@ -315,6 +326,10 @@ def shape(ans, options):
 
     parts = [despac(x) for x in lines]
     parts.append(orig)                    # 底部就是原解析全文
+    used_old = [f"{k}→{v}" for k, v in OLD_LAW if k in text]
+    if used_old:
+        parts.append("【法条时效】本题解析沿用当年的法条名称，相关法律已并入《民法典》："
+                     + "；".join(used_old) + "。复习时条文序号请以《民法典》为准。")
     return {"a": a, "e": "\n".join(parts)}
 
 
@@ -325,6 +340,12 @@ def main():
         if q["type"] in ("单项选择", "多项选择"):
             qmap[f"{q['year']}-{q['num']}"] = q.get("options") or {}
     out = {k: shape(v, qmap.get(k)) for k, v in ans.items() if not k.startswith("_")}
+    amend = {}
+    if os.path.exists(AMEND):
+        amend = json.load(open(AMEND, encoding="utf-8"))
+    for k, v in amend.items():
+        if k in out and v.get("note"):
+            out[k]["e"] = (out[k]["e"] + "\n" + v["note"]).strip()
     json.dump(out, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 
     real = tot = 0
