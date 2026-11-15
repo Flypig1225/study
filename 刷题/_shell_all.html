@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="法硕全科">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232f6fdb'/%3E%3Cstop offset='1' stop-color='%231f7a68'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='32' font-weight='700' fill='%23fff' font-family='sans-serif'%3E法%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%232f6fdb'/%3E%3Cstop offset='1' stop-color='%231f7a68'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-size='32' font-weight='700' fill='%23fff' font-family='sans-serif'%3E法%3C/text%3E%3C/svg%3E">
+<title>法硕（非法学）全科真题刷题 · 398 基础课 &amp; 498 综合课</title>
+<style>
+:root{--bg:#f5f5f2;--card:#fff;--ink:#1d1d1f;--sub:#6b6b70;--line:#e3e3e0;--acc:#2f6fdb;--ok:#1f9d55;--okbg:#e7f6ec;--bad:#d64545;--badbg:#fdeaea;--warn:#b7791f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 -apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+.wrap{max-width:780px;margin:0 auto;padding:12px 14px 80px}
+header{display:flex;align-items:center;gap:10px;margin:4px 0 10px;flex-wrap:wrap}
+header h1{font-size:19px;margin:0;flex:1;min-width:190px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:8px;padding-bottom:2px}
+.tabs.ex{margin-bottom:8px}
+.tab{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:5px 13px;font-size:14.5px;white-space:nowrap;cursor:pointer;color:var(--ink)}
+.tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tabs.ex .tab{font-weight:600;padding:6px 14px;font-size:14.5px}
+.tabs.ex .tab.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center}
+.stats b{display:block;font-size:20px}
+.stats span{font-size:12.5px;color:var(--sub)}
+.btn{display:block;width:100%;border:0;border-radius:12px;padding:13px;font-size:17px;font-weight:600;cursor:pointer;margin-top:10px}
+.btn.pri{background:var(--acc);color:#fff}
+.btn.sec{background:#eef1f6;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:default}
+.addwb{display:block;margin:6px 2px 0 auto;background:none;border:0;padding:4px 2px;font-size:13px;color:var(--sub);cursor:pointer}
+.addwb:disabled{cursor:default;opacity:.7}
+.hint{font-size:13px;color:var(--sub);margin-top:6px}
+.ulhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.ulhead .utitle{font-size:14px;font-weight:600;color:var(--ink)}
+.sortbtns{display:flex;gap:6px}
+.smbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.unit{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--line);cursor:pointer}
+.unit:first-child{border-top:0}
+.unit .rk{width:26px;color:var(--sub);font-size:13px;text-align:right;flex:none}
+.unit .nm{flex:1;min-width:0}
+.unit .nm .title-line{display:flex;align-items:center;gap:5px;flex-wrap:wrap;line-height:1.45}
+.unit .meta{font-size:12.5px;color:var(--sub);margin-top:2px}
+.unit .nm div.meta,.unit .nm div.pt{white-space:normal}
+.unit .pt{font-size:12px;color:#5b5b62;margin-top:1px;line-height:1.4}
+.bar{height:5px;background:#ececea;border-radius:3px;margin-top:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc)}
+.unit.drop{opacity:.6}
+.unit .rs{flex:none;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;padding:4px 9px;font-size:12.5px;cursor:pointer}
+.sw{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--sub);margin:4px 0 8px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.back{border:0;background:none;font-size:15px;color:var(--acc);cursor:pointer;padding:6px 0;flex:none}
+.top .where{flex:1;min-width:130px;font-size:13px;color:var(--sub);text-align:right;line-height:1.35}
+.top-acts{display:flex;gap:6px;flex:none;margin-left:auto}
+.tag{display:inline-block;font-size:12px;color:var(--sub);background:#f0f0ee;border-radius:6px;padding:1px 7px;margin-right:4px;vertical-align:middle}
+.tag.ex398{background:#e8f0fe;color:#1e56b5}
+.tag.ex498{background:#e6f4f1;color:#176b5b}
+.tag.rev{background:#fff4e0;color:var(--warn)}
+.htag{display:inline-block;font-size:11.5px;border-radius:5px;padding:0 6px;font-weight:600;line-height:1.55}
+.htag.核心{background:#eef4ff;color:#1f58c4}
+.htag.新法{background:#fff3dc;color:#9a5b08}
+.htag.回补{background:#f3ebff;color:#6c35b5}
+.htag.降权{background:#f0f0ee;color:#6b6b70}
+.stem{font-size:18px;margin:10px 0 14px;line-height:1.7;white-space:pre-line}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:9px;font-size:16.5px;cursor:pointer;color:var(--ink)}
+.opt .L{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid #c9c9c6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
+.opt.sel{border-color:var(--acc)}
+.opt>span:nth-child(2){flex:1;min-width:0}
+.oe{display:block;margin-top:5px;font-size:14.5px;line-height:1.6;color:#55555a}
+.oe b{color:var(--ink)}
+@media (max-width:899px){.oe{font-size:13.5px}}
+.opt.sel .L{background:var(--acc);border-color:var(--acc);color:#fff}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.ok .L{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt.bad .L{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt.miss{border-color:var(--ok);background:var(--okbg)}
+.opt.miss .L{border-color:var(--ok);color:var(--ok)}
+.judge{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.judge .opt{justify-content:center;font-size:18px;font-weight:600}
+.res{border-radius:12px;padding:10px 14px;margin:6px 0 10px;font-weight:600}
+.res.ok{background:var(--okbg);color:var(--ok)}
+.res.bad{background:var(--badbg);color:var(--bad)}
+.res small{font-weight:400;color:var(--sub);display:block}
+.box{border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:10px 0;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.box b{font-weight:700;color:var(--ink)}
+.xp{margin:3px 0}
+.xo{display:flex;align-items:flex-start;gap:9px;margin:8px 0}
+.xk{flex:none;width:22px;height:22px;margin-top:2px;border-radius:50%;font-size:12.5px;font-weight:700;line-height:22px;text-align:center;color:#fff;background:var(--bad)}
+.xo.ok .xk{background:var(--ok)}
+.xt{flex:1;min-width:0}
+.xo.hit{background:var(--badbg);border:1.5px solid var(--bad);border-radius:8px;padding:4px 7px;margin-left:-8px;margin-right:-8px}
+.xo.hit.miss{background:none;border-style:dashed}
+.xg{flex:none;align-self:center;font-size:12.5px;font-weight:700;color:var(--bad);background:var(--badbg);border-radius:6px;padding:0 7px}
+.xm{margin:4px 0 8px;padding:7px 11px;background:#f4f5f7;border-radius:8px}
+.xl{font-weight:700;color:var(--warn);margin-right:8px}
+.box h4{margin:0 0 2px;font-size:13px;color:var(--sub);font-weight:600}
+.box.book{border-color:#9db8e8}
+.box.note{border-color:#e8c48a}
+.empty{text-align:center;color:var(--sub);padding:30px 0}
+.warnbar{background:#fff4e0;color:#7a5410;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
+.infobar{background:#eef4ff;color:#1f4e9e;border-radius:10px;padding:8px 12px;font-size:13.5px;margin-bottom:10px}
+textarea{width:100%;height:90px;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:8px;font-family:monospace}
+.foot{display:flex;gap:8px;flex-wrap:wrap}
+.foot button,.foot label{flex:1;min-width:120px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px;font-size:14px;cursor:pointer;text-align:center;color:var(--ink)}
+.syncrow{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.syncstat{font-size:13.5px;color:var(--sub);flex:1;min-width:180px}
+.syncstat b{color:var(--ink)}
+.syncbtns{display:flex;gap:6px;flex:none}
+.syncbtns button,.smbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;white-space:nowrap}
+.smbtn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+.smbtn.warn{color:var(--bad);border-color:#efc2c2}
+.syncpanel{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.syncsec{margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.syncsec:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.syncsec h4{margin:0 0 6px;font-size:14px;color:var(--ink)}
+.syncin{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:16px;margin:4px 0 8px;background:#fafaf8;color:var(--ink)}
+.syncmsg{font-size:13px;margin-top:6px;padding:6px 10px;border-radius:8px;background:#f4f5f7;color:var(--ink)}
+.syncmsg.ok{background:var(--okbg);color:var(--ok)}
+.syncmsg.bad{background:var(--badbg);color:var(--bad)}
+.wb-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.wb-info{flex:1;min-width:190px}
+.wb-title{font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.wb-sub{font-size:12.5px;color:var(--sub);margin-top:2px}
+.wb-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.wb{padding:10px 0;border-top:1px solid var(--line);font-size:15px}
+.wb-list .wb:first-child{border-top:0}
+.wb .a{color:var(--ok);font-weight:600}
+.fin-list{text-align:left;margin-top:6px}
+.fin-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.fin-row:first-child{border-top:0}
+.fin-nm{flex:1;min-width:0;font-size:14px}
+.fin-acts{display:flex;gap:6px;flex:none}
+
+.kbd{font-size:12px;color:var(--sub);text-align:center;margin-top:8px}
+@media (max-width:520px){.kbd{display:none}.stem{font-size:17px}}
+@media (max-width:899px){.quizpg{padding-top:3vh}body{font-size:15px}header h1{font-size:18px}.stem{font-size:16px}.opt{font-size:15.5px}.opt .L{font-size:13px}.judge .opt{font-size:17px}.btn{font-size:16px}.box{font-size:14px}.wb{font-size:14px}.tab{font-size:14px}.back{font-size:14px}.stats b{font-size:19px}}
+@media (min-width:900px){
+.wrap{max-width:960px;padding-top:20px}
+body{font-size:17px}
+header h1{font-size:22px}
+.quizpg{padding-top:12vh}
+.quizpg .card{padding:24px 30px}
+.stem{font-size:22px;margin:12px 0 20px}
+.opt{font-size:19px;padding:14px 18px;margin-bottom:12px;gap:14px}
+.opt .L{width:30px;height:30px;font-size:15px}
+.judge .opt{font-size:21px}
+.btn{font-size:18px;padding:15px}
+.res{font-size:18px}
+.box{font-size:16.5px}
+.tag{font-size:13px}
+.top .where{font-size:14px}
+.back{font-size:16px}
+.unit .meta{font-size:13.5px}
+.stats b{font-size:24px}.stats span{font-size:14px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script id="data" type="application/json">
+/*__QUIZ_DATA__*/
+</script>
+<script id="kb" type="application/json">
+/*__KB_DATA__*/
+</script>
+<script>
+const D=JSON.parse(document.getElementById('data').textContent);
+const KB=JSON.parse(document.getElementById('kb').textContent);
+function fmtBook(q){if(q.kb==null)return esc(q.k||'');const t=KB[q.kb];let o='',p=0;(q.kh||[]).forEach(([a,b])=>{if(a<p)return;o+=esc(t.slice(p,a))+'<b>'+esc(t.slice(a,b))+'</b>';p=b;});return o+esc(t.slice(p));}
+const EXAMS=[
+  {id:'all',label:'全科合一'},
+  {id:'398',label:'398 基础课'},
+  {id:'498',label:'498 综合课'}
+];
+const SUB_BY_EXAM={
+  all:['全部','刑法','民法','法理学','中国宪法学','中国法制史'],
+  '398':['全部','刑法','民法'],
+  '498':['全部','法理学','中国宪法学','中国法制史']
+};
+const SUBNAME={'全部':'全部学科','刑法':'刑法','民法':'民法','法理学':'法理学','中国宪法学':'宪法学','中国法制史':'法制史'};
+const EXNAME={'all':'全科','398':'398 基础课','498':'498 综合课'};
+const TN={'判':'判断','单':'单选','多':'多选'};
+// index
+const Q={};D.forEach((u,ui)=>{u.ui=ui;u.qs.forEach((q,qi)=>{q.u=ui;q.qi=qi;Q[q.id]=q;})});
+// storage
+const KEY='fsall_v1';const SYNC_KEY='fsall_sync_v1';const GIST_FILE='fsall_progress_v1.json';
+let canSave=true;let S=null;let migratedCount=0;
+try{
+  S=JSON.parse(localStorage.getItem(KEY)||'null');
+  localStorage.setItem(KEY+'_t','1');
+}catch(e){canSave=false;}
+function normRec(r){if(!Array.isArray(r)||r.length<4)return null;return [+r[0]||0,+r[1]||0,+r[2]||0,+r[3]||0,+r[4]||0];}
+function migrateLegacy(){
+  const nq={};let c398=0,c498=0;const now=Date.now();
+  const pull=(lsKey,prefix)=>{
+    try{
+      const raw=JSON.parse(localStorage.getItem(lsKey)||'null');
+      if(!raw||!raw.q)return 0;
+      const cl=+raw.clearedAt||0;let cnt=0;
+      for(const k in raw.q){
+        const r=normRec(raw.q[k]);if(!r)continue;
+        if(!r[4])r[4]=now;
+        if(cl>0&&r[4]<=cl)continue;
+        const nid=k.includes(':')?k:(prefix+k);
+        if(!Q[nid])continue;
+        nq[nid]=r;cnt++;
+      }
+      return cnt;
+    }catch(e){return 0;}
+  };
+  c398=pull('fsjc_v1','jc:');
+  c498=pull('fszh_v1','zh:');
+  migratedCount=c398+c498;
+  return {q:nq,exam:'all',sub:'全部',sort:'pred',drop:false,v2:1,clearedAt:0};
+}
+if(!S||!S.q){
+  S=canSave?migrateLegacy():{q:{},exam:'all',sub:'全部',sort:'pred',drop:false,v2:1,clearedAt:0};
+  if(canSave&&migratedCount>0){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+}
+if(!S.exam||!EXNAME[S.exam])S.exam='all';
+if(!S.sub||!SUBNAME[S.sub])S.sub='全部';
+if(!S.sort)S.sort='pred';
+if(!S.clearedAt)S.clearedAt=0;
+if(!S.v2){const now=Date.now();for(const id in S.q){if(S.q[id].length<5)S.q[id][4]=now;}S.v2=1;}
+let SYNC={token:'',gistId:'',lastSync:0,auto:true};
+if(canSave){try{const sc=JSON.parse(localStorage.getItem(SYNC_KEY)||'null');if(sc&&typeof sc==='object')SYNC=Object.assign(SYNC,sc);}catch(e){}}
+function saveSyncCfg(){if(!canSave)return;try{localStorage.setItem(SYNC_KEY,JSON.stringify(SYNC));}catch(e){}}
+let syncOpen=false,syncBusy=false,syncTimer=null,lastAutoTry=0,syncMsg={cls:'',text:''};
+function save(pushCloud){
+  if(!canSave)return;
+  try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+  if(pushCloud&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false){
+    clearTimeout(syncTimer);
+    syncTimer=setTimeout(()=>syncNow(true),1500);
+  }
+}
+function b64e(str){const bytes=new TextEncoder().encode(str);let bin='';for(let i=0;i<bytes.length;i++)bin+=String.fromCharCode(bytes[i]);return btoa(bin);}
+function b64d(b64){const bin=atob(b64.trim());const bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new TextDecoder().decode(bytes);}
+function remapLegacyObj(rawRemote,prefix){
+  const rq=(rawRemote.q&&typeof rawRemote.q==='object')?rawRemote.q:rawRemote;
+  const out={};
+  for(const k in rq){
+    const nk=k.includes(':')?k:(prefix+k);
+    out[nk]=rq[k];
+  }
+  return Object.assign({},rawRemote,{q:out});
+}
+function mergeProgress(localState,rawRemote,scopeMode){
+  if(!rawRemote||typeof rawRemote!=='object')throw new Error('数据格式无效');
+  scopeMode=scopeMode||'all';
+  if(scopeMode==='jc'||scopeMode==='zh')rawRemote=remapLegacyObj(rawRemote,scopeMode+':');
+  const rq=(rawRemote.q&&typeof rawRemote.q==='object')?rawRemote.q:(Object.keys(rawRemote).some(k=>Q[k])?rawRemote:null);
+  if(!rq)throw new Error('未找到题目进度字段');
+  const lCleared=+localState.clearedAt||0;
+  const rCleared=+(rawRemote.clearedAt||rawRemote.c)||0;
+  const clearedAt=scopeMode==='all'?Math.max(lCleared,rCleared):lCleared;
+  const scopePrefix=scopeMode==='jc'?'jc:':(scopeMode==='zh'?'zh:':null);
+  const lq=localState.q||{};
+  const nq={};
+  const ids=new Set([...Object.keys(lq),...Object.keys(rq)]);
+  let fromRemote=0,keptLocal=0,needPush=scopeMode==='all'?(clearedAt>rCleared):true;
+  for(const id of ids){
+    if(!Q[id])continue;
+    const l=normRec(lq[id]),r=normRec(rq[id]);
+    let pick=null,pickedRemote=false,localNewer=false;
+    if(l&&r){
+      if(r[4]>l[4]||(r[4]===l[4]&&(r[0]!==l[0]||r[1]!==l[1]||r[2]!==l[2]||r[3]!==l[3])&&(r[0]>l[0]||r[3]>l[3]))){pick=r;pickedRemote=true;}
+      else{pick=l;if(l[4]>r[4])localNewer=true;}
+    }else if(r){pick=r;pickedRemote=true;}
+    else{pick=l;localNewer=true;}
+    if(!pick)continue;
+    if(clearedAt>0&&pick[4]<=clearedAt)continue;
+    if(scopePrefix&&id.startsWith(scopePrefix)&&rCleared>0&&pick[4]<=rCleared)continue;
+    nq[id]=pick;
+    if(pickedRemote)fromRemote++;else{keptLocal++;if(localNewer)needPush=true;}
+  }
+  return {state:{q:nq,exam:localState.exam||'all',sub:localState.sub||'全部',sort:localState.sort||'pred',drop:!!localState.drop,v2:1,clearedAt},fromRemote,keptLocal,totalAfter:Object.keys(nq).length,needPush,remoteCleared:rCleared};
+}
+function fmtTime(ms){if(!ms)return '';const d=new Date(ms);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;}
+function setSyncMsg(cls,text){syncMsg={cls,text};const el=document.getElementById('syncmsg');if(el){el.className='syncmsg'+(cls?' '+cls:'');el.textContent=text;el.style.display=text?'block':'none';}}
+function exportProgressObj(){return {app:'fsall',v:2,c:S.clearedAt||0,updatedAt:Date.now(),q:S.q};}
+function exportProgressCode(){return 'FSALL1:'+b64e(JSON.stringify(exportProgressObj()));}
+function parseImportPayload(raw){
+  const t=(raw||'').trim();if(!t)throw new Error('请先粘贴进度码或选择文件');
+  if(t.startsWith('FSALL1:'))return {mode:'all',data:JSON.parse(b64d(t.slice(7)))};
+  if(t.startsWith('FSJC1:'))return {mode:'jc',data:JSON.parse(b64d(t.slice(6)))};
+  if(t.startsWith('FSZH1:'))return {mode:'zh',data:JSON.parse(b64d(t.slice(6)))};
+  const obj=JSON.parse(t);
+  const rq=(obj&&obj.q&&typeof obj.q==='object')?obj.q:obj;
+  const keys=rq&&typeof rq==='object'?Object.keys(rq):[];
+  if(obj.app==='fsall'||keys.some(k=>k.startsWith('jc:')||k.startsWith('zh:')))return {mode:'all',data:obj};
+  if(keys.length){
+    const is398=confirm('检测到旧版单科进度文件（无科目前缀）：\n点「确定」按 398 基础课合并；\n点「取消」按 498 综合课合并。');
+    return {mode:is398?'jc':'zh',data:obj};
+  }
+  return {mode:'all',data:obj};
+}
+function applyImportText(raw){
+  const parsed=parseImportPayload(raw);
+  const res=mergeProgress(S,parsed.data,parsed.mode);
+  S=res.state;save(true);
+  setSyncMsg('ok',`合并完成：吸收对方较新 ${res.fromRemote} 题，保留本地 ${res.keptLocal} 题，当前共 ${res.totalAfter} 条记录。`);
+  home(true);
+}
+async function syncNow(silent){
+  if(!canSave||syncBusy)return;
+  if(!SYNC.token){if(!silent)setSyncMsg('bad','请先填写 GitHub Token');return;}
+  if(typeof fetch!=='function'){if(!silent)setSyncMsg('bad','当前环境不支持联网请求');return;}
+  syncBusy=true;lastAutoTry=Date.now();
+  if(!silent)setSyncMsg('','正在同步云端进度…');
+  const hdr={'Authorization':'Bearer '+SYNC.token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  try{
+    if(!SYNC.gistId){
+      const cr=await fetch('https://api.github.com/gists',{method:'POST',headers:Object.assign({'Content-Type':'application/json'},hdr),body:JSON.stringify({description:'法硕全科刷题进度同步（自动生成）',public:false,files:{[GIST_FILE]:{content:JSON.stringify(exportProgressObj())}}})});
+      if(!cr.ok){throw new Error(cr.status===401||cr.status===403?'Token 无效或缺少 gist 权限':'创建云端空间失败（HTTP '+cr.status+'）');}
+      const gj=await cr.json();
+      SYNC.gistId=gj.id;SYNC.lastSync=Date.now();saveSyncCfg();
+      setSyncMsg('ok',`已创建私人云端同步空间（Gist ID: ${SYNC.gistId}）并上传当前进度。`);
+      if(view.name==='home')home(true);
+      return;
+    }
+    const gr=await fetch('https://api.github.com/gists/'+encodeURIComponent(SYNC.gistId),{cache:'no-store',headers:hdr});
+    if(!gr.ok){throw new Error(gr.status===401||gr.status===403?'Token 无效或缺少 gist 权限':gr.status===404?'找不到该 Gist ID':'拉取失败（HTTP '+gr.status+'）');}
+    const gj=await gr.json();
+    const fileObj=gj.files&&gj.files[GIST_FILE];
+    let needPush=!fileObj||!fileObj.content,fromRemote=0,keptLocal=0;
+    if(fileObj&&fileObj.content){
+      const remoteObj=JSON.parse(fileObj.content);
+      const res=mergeProgress(S,remoteObj,'all');
+      fromRemote=res.fromRemote;keptLocal=res.keptLocal;needPush=needPush||res.needPush;
+      if(fromRemote>0||res.state.clearedAt>(S.clearedAt||0)){
+        S=res.state;save(false);
+      }
+    }
+    if(needPush){
+      const pr=await fetch('https://api.github.com/gists/'+encodeURIComponent(SYNC.gistId),{method:'PATCH',headers:Object.assign({'Content-Type':'application/json'},hdr),body:JSON.stringify({files:{[GIST_FILE]:{content:JSON.stringify(exportProgressObj())}}})});
+      if(!pr.ok){throw new Error('上传合并结果失败（HTTP '+pr.status+'）');}
+    }
+    SYNC.lastSync=Date.now();saveSyncCfg();
+    const summary=fromRemote>0?`已同步：吸收云端 ${fromRemote} 题，保留本地 ${keptLocal} 题。`:needPush?'已将本地最新进度同步至云端。':'云端已是最新进度。';
+    setSyncMsg('ok',summary);
+    if(view.name==='home')home(true);
+  }catch(err){
+    setSyncMsg('bad',(err&&err.message)||'同步失败，本地进度不受影响');
+    if(view.name==='home'){const stEl=document.getElementById('syncstat');if(stEl)stEl.textContent='云同步异常：'+((err&&err.message)||'网络错误');}
+  }finally{syncBusy=false;}
+}
+function copyTextSync(txt,fbEl){
+  let ok=false;
+  if(fbEl){fbEl.value=txt;fbEl.style.display='block';fbEl.focus();fbEl.select();try{ok=document.execCommand('copy');}catch(e){}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).catch(()=>{});}
+  return ok;
+}
+const today=()=>Math.floor((Date.now()+8*36e5)/864e5);  // 北京时间的日期序号，错题本按天计数用
+// st: [status, streak, due, wrongCount]  status 1=一次做对 2=错题本 3=错题已掌握
+const st=id=>{const s=S.q[id];return s&&s[0]?s:undefined};  // status 0 = 这一节被重置过，当作没做
+function inScope(u){return (S.exam==='all'||u.ex===S.exam)&&(S.sub==='全部'||u.sub===S.sub);}
+function qInScope(q){return inScope(D[q.u])}
+function getUnits(filtered){
+  let us=filtered?D.filter(inScope):D.slice();
+  if(S.sort==='hist')us.sort((a,b)=>(b.wh-a.wh)||(b.L-a.L)||(a.ui-b.ui));
+  return us;
+}
+function unitRankMap(){const m={};getUnits(false).forEach((u,i)=>{m[u.ui]=i;});return m;}
+function rint(n){try{const c=window.crypto;if(c&&c.getRandomValues){const b=new Uint32Array(1),lim=4294967296-4294967296%n;let x;do{c.getRandomValues(b);x=b[0];}while(x>=lim);return x%n;}}catch(e){}return Math.floor(Math.random()*n);}
+function wrongList(){const rm=unitRankMap();return Object.keys(S.q).filter(id=>Q[id]&&S.q[id][0]===2&&qInScope(Q[id])).sort((a,b)=>rm[Q[a].u]-rm[Q[b].u]||Q[a].qi-Q[b].qi);}
+function dueList(ids){const d=today();return (ids||wrongList()).filter(id=>S.q[id][2]!==d);}
+function unitWrongIds(ui){return D[ui].qs.map(q=>q.id).filter(id=>{const s=st(id);return s&&s[0]===2;});}
+function nextNew(unitOnly){
+  const us=unitOnly!=null?[D[unitOnly]]:getUnits(true);
+  for(const u of us){const l=u.qs.filter(q=>!st(q.id)&&q.id!==(sess&&sess.cur));if(l.length)return l[rint(l.length)].id;}
+  for(const u of us){for(const q of u.qs){if(!st(q.id))return q.id;}}
+  return null;
+}
+let view={name:'home'};let sess=null;
+const $=h=>{const d=document.createElement('div');d.innerHTML=h;return d.firstElementChild};
+const esc=s=>String(s).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').replace(/\s+·/g,'\n·').replace(/\s*\[答题技巧\]/g,'\n【记忆】').replace(/\x01/g,'<b>').replace(/\x02/g,'</b>');
+  let h0=t.split(/\n+/).map(x=>x.trim()).filter(Boolean).map(x=>{let m=x.match(/^([A-E])([✓✗])\s*([\s\S]*)$/);
+    if(m&&skipOpt)return '';
+    if(m)return `<div class="xo ${m[2]=='✓'?'ok':'no'}${mk[m[1]]?(mk[m[1]]=='漏选'?' hit miss':' hit'):''}"><span class="xk">${m[1]}</span><span class="xt">${m[3]}</span>${mk[m[1]]=='漏选'?`<span class="xg">漏选</span>`:''}</div>`;
+    m=x.match(/^记法[:：]\s*([\s\S]*)$/);if(m)return `<div class="xm"><span class="xl">记法</span>${m[1]}</div>`;
+    return `<div class="xp">${x}</div>`;});h0=[...h0.filter(x=>x.startsWith('<div class="xm"')),...h0.filter(x=>!x.startsWith('<div class="xm"'))].join('');const XM=/(<div class="xm"><span class="xl">记法<\/span>(?:(?!<\/div>)[\s\S])*)<\/div>(?=<div class="xm"><span class="xl">记法<\/span>)<div class="xm"><span class="xl">记法<\/span>/g;let pv;do{pv=h0;h0=h0.replace(XM,'$1<br>');}while(h0!==pv);return h0;}
+function subTagHtml(u){return `<span class="tag ${u.ex==='398'?'ex398':'ex498'}">${u.ex}·${SUBNAME[u.sub]||u.sub}</span>`;}
+function home(keepScroll){
+  view={name:'home'};const app=document.getElementById('app');
+  const us=getUnits(true);
+  let tot=0,done=0,right=0,ans=0;
+  us.forEach(u=>u.qs.forEach(q=>{tot++;const s=st(q.id);if(s){done++;ans++;if(s[0]!==2)right++;}}));
+  const wr=wrongList().length;
+  const subs=SUB_BY_EXAM[S.exam]||SUB_BY_EXAM.all;
+  let h=`<div><header><h1>法硕全科 · 真题刷题</h1><span class="tag">${S.sort==='pred'?'2027预测排序':'22年均分排序'}</span></header>`;
+  if(!canSave)h+=`<div class="warnbar">当前是预览窗口，做题记录存不下来。请下载这个文件，用手机或电脑的浏览器打开后再做题。</div>`;
+  if(migratedCount>0){h+=`<div class="infobar">已自动合并你此前在单科版做过的 ${migratedCount} 题进度，无需重新刷起。</div>`;migratedCount=0;}
+  h+=`<div class="tabs ex">${EXAMS.map(e=>`<div class="tab ${S.exam===e.id?'on':''}" data-ex="${e.id}">${e.label}</div>`).join('')}</div>`;
+  h+=`<div class="tabs">${subs.map(s=>`<div class="tab ${S.sub===s?'on':''}" data-sub="${s}">${SUBNAME[s]}</div>`).join('')}</div>`;
+  h+=`<div class="card"><div class="stats"><div><b>${done}/${tot}</b><span>已做</span></div><div><b>${ans?Math.round(right/ans*100):0}%</b><span>正确率</span></div><div><b>${wr}</b><span>错题集</span></div></div>
+  <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
+  <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题集（${wr} 题）</button></div>`;
+  h+=`<div class="card"><div class="ulhead"><span class="utitle">章节列表（${us.length} 章）</span><div class="sortbtns"><button class="smbtn ${S.sort==='pred'?'on':''}" data-sort="pred">2027预测比重</button><button class="smbtn ${S.sort==='hist'?'on':''}" data-sort="hist">22年历史均分</button></div></div><div id="ul"></div></div>`;
+  const cloudOn=!!(SYNC.token&&SYNC.gistId);
+  const syncLabel=cloudOn?`云同步：<b>已连接</b>${SYNC.lastSync?' · 上次 '+fmtTime(SYNC.lastSync):''}`:'跨设备同步（电脑 ↔ 手机）：未配置云同步';
+  h+=`<div class="card"><div class="syncrow"><div class="syncstat" id="syncstat">${syncLabel}</div><div class="syncbtns">${cloudOn?'<button class="smbtn pri" id="syncnow">立即同步</button>':''}<button class="smbtn" id="synctog">${syncOpen?'收起':'同步设置'}</button></div></div>`;
+  if(syncOpen){
+    h+=`<div class="syncpanel">
+      <div class="syncsec">
+        <h4>方式一：GitHub 云端自动同步（配置一次，之后打开网页自动合并）</h4>
+        <div class="hint" style="margin:0 0 6px">需一个只勾选 <b>gist</b> 权限的 GitHub Token。第一台设备只需填 Token（Gist ID 留空）点「连接 / 自动创建」；第二台设备粘贴配对口令或填入同一组 Token + Gist ID 即可自动互相同步。</div>
+        <input class="syncin" id="stoken" type="password" placeholder="GitHub Token（仅需 gist 权限）" value="${esc(SYNC.token||'')}">
+        <input class="syncin" id="sgist" type="text" placeholder="Gist ID（首次留空将自动创建私人空间）" value="${esc(SYNC.gistId||'')}">
+        <div class="foot">
+          <button id="ssave" style="background:var(--acc);color:#fff;border-color:var(--acc)">${cloudOn?'保存并立即同步':'连接 / 自动创建'}</button>
+          ${cloudOn?'<button id="spair">复制配对口令（给手机用）</button><button id="sdisc">断开云同步</button>':'<button id="spairin">粘贴配对口令</button>'}
+        </div>
+        <textarea id="spairbox" style="display:none;margin-top:8px" placeholder="在这里粘贴从另一台设备复制的 FSALLPAIR: 配对口令，再点下方确认"></textarea>
+        <button class="smbtn pri" id="spairgo" style="display:none;margin-top:6px">确认配对并同步</button>
+      </div>
+      <div class="syncsec">
+        <h4>方式二：免账号同步码 / 文件互传（微信、AirDrop、备忘录；兼容旧版 FSJC1/FSZH1 进度码）</h4>
+        <div class="hint" style="margin:0 0 6px">按每题最新时间戳智能合并，不会覆盖你在另一台设备刚做的新题。</div>
+        <div class="foot">
+          <button id="expcode">生成并复制进度码</button>
+          <button id="expfile">下载进度文件</button>
+          <label for="impfile">导入文件合并<input id="impfile" type="file" accept=".json,application/json,text/plain" style="display:none"></label>
+        </div>
+        <textarea id="syncio" style="margin-top:8px" placeholder="把 FSALL1:... / FSJC1:... / FSZH1:... 进度码粘贴到这里，点下方「合并进度码」"></textarea>
+        <button class="smbtn pri" id="impcode" style="margin-top:6px">合并进度码</button>
+      </div>
+      <div class="syncmsg${syncMsg.cls?' '+syncMsg.cls:''}" id="syncmsg" style="display:${syncMsg.text?'block':'none'}">${esc(syncMsg.text||'')}</div>
+    </div>`;
+  }
+  h+=`</div>`;
+  h+=`<div class="card"><div style="font-weight:600;margin-bottom:6px">规则与排序说明</div><div class="hint" style="margin:0">默认按「<b>2027 预测比重</b>」排序（综合近 5 年真题占比 55% + 近 9 年稳定期 30% + 22 年均分 15% + 趋势斜率 + 新法新解释/主观轮空回补信号），「开始刷题」与「错题集」均按此优先级推进。<br>做错的题进错题集，需在不同日期连续做对两次才移出；当日想重复巩固可直接点各章「重刷本节错题」。<br>__COVERAGE__ 所有题目均配逐项精析与现行法条/考点依据，涉及旧法修订的题均附「新法提示」。</div>
+  <div class="foot" style="margin-top:10px"><button id="rst">清空全部进度</button></div></div></div>`;
+  app.innerHTML=h;
+  const ul=document.getElementById('ul');let rk=0;
+  if(!us.length)ul.innerHTML='<div class="empty">没有题</div>';
+  us.forEach(u=>{
+    const qs=u.qs;if(!qs.length)return;
+    let d=0,r=0;qs.forEach(q=>{const s=st(q.id);if(s){d++;if(s[0]!==2)r++;}});
+    rk++;
+    const showBadge=S.sort==='pred'&&u.bt;
+    const metaTxt=S.sort==='pred'
+      ?`2027预测 ${(+u.w).toFixed(1)} · 近5年${(+u.w5).toFixed(1)}分/年 (22年均${(+u.wh).toFixed(1)}) · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}`
+      :`22年均 ${(+u.wh).toFixed(1)}分/年 · 近5年${(+u.w5).toFixed(1)}分/年 · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}`;
+    const ptHtml=(S.sort==='pred'&&u.pt)?`<div class="pt">${esc(u.pt)}</div>`:'';
+    const rstLabel=d>=qs.length?'重刷':'重置';
+    const el=$(`<div class="unit"><div class="rk">${rk}</div><div class="nm"><div class="title-line">${S.sub==='全部'?subTagHtml(u):''}<span>${esc(u.name)}</span>${showBadge?`<span class="htag ${esc(u.bt)}">${esc(u.bt)}</span>`:''}</div><div class="meta">${metaTxt}</div>${ptHtml}<div class="bar"><i style="width:${qs.length?d/qs.length*100:0}%"></i></div></div>${d?`<button class="rs">${rstLabel}</button>`:''}</div>`);
+    el.onclick=()=>startSess('unit',u.ui,false,'home');ul.appendChild(el);
+    const rb=el.querySelector('.rs');
+    if(rb)rb.onclick=e=>{
+      e.stopPropagation();
+      if(d>=qs.length)redoCurrentChapter(u,'home');
+      else resetUnit(u);
+    };
+  });
+  app.querySelectorAll('.tabs.ex .tab').forEach(t=>t.onclick=()=>{
+    S.exam=t.dataset.ex;
+    const validSubs=SUB_BY_EXAM[S.exam]||SUB_BY_EXAM.all;
+    if(!validSubs.includes(S.sub))S.sub='全部';
+    save(false);home();
+  });
+  app.querySelectorAll('.tabs:not(.ex) .tab').forEach(t=>t.onclick=()=>{S.sub=t.dataset.sub;save(false);home();});
+  app.querySelectorAll('[data-sort]').forEach(b=>b.onclick=()=>{S.sort=b.dataset.sort;save(false);home(true);});
+  document.getElementById('go').onclick=()=>startSess('main',null,false,'home');
+  document.getElementById('wb').onclick=wrongBook;
+  document.getElementById('rst').onclick=()=>{if(confirm('确定清空全部做题记录？清空后将无法恢复（开启云同步时也会同步清空）。')){S.q={};S.clearedAt=Date.now();save(true);home();}};
+  document.getElementById('synctog').onclick=()=>{syncOpen=!syncOpen;home(true);};
+  const sn=document.getElementById('syncnow');if(sn)sn.onclick=()=>syncNow(false);
+  if(syncOpen){
+    document.getElementById('ssave').onclick=()=>{
+      SYNC.token=(document.getElementById('stoken').value||'').trim();
+      SYNC.gistId=(document.getElementById('sgist').value||'').trim();
+      SYNC.auto=true;saveSyncCfg();syncNow(false);
+    };
+    const sp=document.getElementById('spair');if(sp)sp.onclick=()=>{
+      const pb=document.getElementById('spairbox');
+      const code='FSALLPAIR:'+b64e(JSON.stringify({t:SYNC.token,g:SYNC.gistId}));
+      const copied=copyTextSync(code,pb);
+      setSyncMsg('ok',(copied?'已复制配对口令！':'请长按全选复制上方框内配对口令：')+'（内含 Token，仅限发送到你自己的另一台设备并点「粘贴配对口令」）。');
+    };
+    const sdisc=document.getElementById('sdisc');if(sdisc)sdisc.onclick=()=>{
+      SYNC={token:'',gistId:'',lastSync:0,auto:true};saveSyncCfg();setSyncMsg('','已断开云端同步（本地做题记录仍保留）。');home(true);
+    };
+    const spin=document.getElementById('spairin');if(spin)spin.onclick=()=>{
+      document.getElementById('spairbox').style.display='block';
+      document.getElementById('spairgo').style.display='inline-block';
+      document.getElementById('spairbox').focus();
+    };
+    const spgo=document.getElementById('spairgo');if(spgo)spgo.onclick=()=>{
+      try{
+        const raw=(document.getElementById('spairbox').value||'').trim();
+        if(!raw.startsWith('FSALLPAIR:'))throw new Error('口令需以 FSALLPAIR: 开头');
+        const cfg=JSON.parse(b64d(raw.slice(10)));
+        if(!cfg.t||!cfg.g)throw new Error('配对口令不完整');
+        SYNC.token=cfg.t;SYNC.gistId=cfg.g;SYNC.auto=true;saveSyncCfg();syncNow(false);
+      }catch(e){setSyncMsg('bad',(e&&e.message)||'配对口令无效');}
+    };
+    document.getElementById('expcode').onclick=()=>{
+      const io=document.getElementById('syncio');const code=exportProgressCode();
+      const copied=copyTextSync(code,io);
+      setSyncMsg('ok',copied?`已生成并复制进度码（含 ${Object.keys(S.q).length} 条记录），发送给另一台设备后粘贴合并即可。`:`已生成进度码（含 ${Object.keys(S.q).length} 条记录），请全选复制上方文本框内容。`);
+    };
+    document.getElementById('expfile').onclick=()=>{
+      const blob=new Blob([JSON.stringify(exportProgressObj(),null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob);const a=document.createElement('a');
+      const dt=new Date();const ds=`${dt.getFullYear()}${String(dt.getMonth()+1).padStart(2,'0')}${String(dt.getDate()).padStart(2,'0')}`;
+      a.href=url;a.download=`fsall-progress-${ds}.json`;document.body.appendChild(a);a.click();a.remove();
+      setTimeout(()=>URL.revokeObjectURL(url),1000);
+      setSyncMsg('ok','已导出进度文件，发送到另一台设备并用「导入文件合并」即可。');
+    };
+    document.getElementById('impfile').onchange=e=>{
+      const f=e.target.files&&e.target.files[0];if(!f)return;
+      const r=new FileReader();r.onload=()=>{try{applyImportText(r.result);}catch(err){setSyncMsg('bad',(err&&err.message)||'导入失败');}};r.readAsText(f);
+    };
+    document.getElementById('impcode').onclick=()=>{
+      try{applyImportText(document.getElementById('syncio').value);}catch(err){setSyncMsg('bad',(err&&err.message)||'进度码格式有误');}
+    };
+  }
+  if(keepScroll!==true)window.scrollTo(0,0);
+}
+function resetUnit(u){
+  const ids=u.qs.map(q=>q.id).filter(id=>st(id));if(!ids.length)return;
+  if(!confirm(`重置「${u.name}」？\n这一节已做的 ${ids.length} 题会全部变回没做过（也会移出错题集）。`))return;
+  const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
+  save(true);home(true);
+}
+function redoCurrentChapter(u,from){
+  const ids=u.qs.map(q=>q.id).filter(id=>st(id));
+  const msg=ids.length
+    ?`确定重新刷「${u.name}」？\n本章节已做的 ${ids.length} 题将重置为未做状态，并立即从头开始本章节（共 ${u.qs.length} 题）。`
+    :`切换到单章刷题「${u.name}」（共 ${u.qs.length} 题）？`;
+  if(!confirm(msg))return;
+  if(ids.length){
+    const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
+    save(true);
+  }
+  startSess('unit',u.ui,false,from||(sess&&sess.from)||'home');
+}
+function clearUnitWrong(u){
+  const ids=unitWrongIds(u.ui);if(!ids.length)return;
+  if(!confirm(`确定清空「${u.name}」的 ${ids.length} 道错题？\n这些题将移出错题集并恢复为未做状态，方便重新刷。`))return;
+  const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
+  save(true);wrongBook(true);
+}
+function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startWrong(force,from){startSess('wrong',null,!!force,from||'wb');}
+function startUnitWrong(ui,force,from){startSess('wrong',ui,!!force,from||'wb');}
+function startSess(mode,unit,force,from){
+  view={name:'quiz'};
+  let queue=[];
+  if(mode==='wrong'){
+    const baseIds=unit!=null?unitWrongIds(unit):wrongList();
+    queue=shuffleArr(force?baseIds.slice():dueList(baseIds));
+  }
+  sess={mode,unit,force:!!force,from:from||(mode==='wrong'?'wb':'home'),queue,total:queue.length,n:0,right:0,cur:null,answered:false,sel:[],hist:[],view:null};
+  nextQ();
+}
+function nextQ(){
+  let id=null,isRev=false;
+  if(sess.mode==='wrong'){
+    while(sess.queue.length){const c=sess.queue.shift();const s=st(c);if(s&&s[0]===2&&(sess.force||s[2]!==today())){id=c;isRev=true;break;}}
+  }else id=nextNew(sess.mode==='unit'?sess.unit:null);
+  if(!id){finish();return;}
+  if(sess.ord)delete sess.ord[id];sess.cur=id;sess.isRev=isRev;sess.answered=false;sess.sel=[];sess.view=null;render();
+}
+function goBackFromQuiz(){if(sess&&sess.from==='wb')wrongBook();else home();}
+function finish(){
+  const app=document.getElementById('app');
+  const backLabel=sess.from==='wb'?'‹ 错题集':'‹ 返回';
+  if(sess.mode==='unit'){
+    const u=D[sess.unit];
+    app.innerHTML=`<div><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">「${esc(u.name)}」的新题都做完了！</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div><button class="btn pri" id="rdu">↻ 重新刷「${esc(u.name)}」（重置本节并重做）</button>${sess.from==='wb'?'<button class="btn sec" id="bkwb">回错题集</button>':''}<button class="btn sec" id="bk2">回首页</button></div>`;
+    document.getElementById('bk').onclick=goBackFromQuiz;
+    document.getElementById('rdu').onclick=()=>redoCurrentChapter(u,sess.from);
+    const bw=document.getElementById('bkwb');if(bw)bw.onclick=wrongBook;
+    document.getElementById('bk2').onclick=home;
+    window.scrollTo(0,0);return;
+  }
+  if(sess.mode==='wrong'&&sess.unit!=null){
+    const u=D[sess.unit];
+    const uLeft=unitWrongIds(sess.unit),uDue=dueList(uLeft);
+    const msg=!uLeft.length?`「${u.name}」的错题已清空！`:uDue.length?`「${u.name}」这一轮错题刷完了，今天还有 ${uDue.length} 题未练。`:`「${u.name}」的错题今日已刷完（本节错题集还有 ${uLeft.length} 题，明天再来或点击再练一遍）。`;
+    app.innerHTML=`<div><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>${uLeft.length?`<button class="btn pri" id="again">↻ ${uDue.length?`继续刷本节错题（今日 ${uDue.length} 题）`:`再练一遍本节错题（${uLeft.length} 题）`}</button>`:''}<button class="btn sec" id="rdu">↻ 重刷「${esc(u.name)}」全章节</button><button class="btn sec" id="bkwb">回错题集</button><button class="btn sec" id="bk2">回首页</button></div>`;
+    document.getElementById('bk').onclick=goBackFromQuiz;
+    const ag=document.getElementById('again');if(ag)ag.onclick=()=>startUnitWrong(sess.unit,uDue.length===0,sess.from);
+    document.getElementById('rdu').onclick=()=>redoCurrentChapter(u,sess.from);
+    document.getElementById('bkwb').onclick=wrongBook;
+    document.getElementById('bk2').onclick=home;
+    window.scrollTo(0,0);return;
+  }
+  const left=wrongList().length,due=dueList().length;
+  const msg=sess.mode==='wrong'?(!left?'错题集清空了！':due?`这一轮错题刷完了，今天还有 ${due} 题没做。`:`今天的错题都刷完了，明天再来。错题集里还有 ${left} 题。`):'当前筛选范围里的新题都做完了。';
+  const scopeUnits=getUnits(true).filter(u=>sess.mode!=='wrong'||unitWrongIds(u.ui).length>0);
+  let h=`<div><div class="top"><button class="back" id="bk">${backLabel}</button></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>`;
+  if(sess.mode==='wrong'&&left){
+    h+=`<button class="btn pri" id="again">${due?`继续刷全部错题（今日 ${due} 题）`:`再练一遍全部错题（${left} 题）`}</button>`;
+  }
+  if(sess.from==='wb')h+=`<button class="btn sec" id="bkwb">回错题集</button>`;
+  h+=`<button class="btn sec" id="bk2">回首页</button>`;
+  if(scopeUnits.length){
+    h+=`<div class="card" style="margin-top:12px"><div style="font-weight:600;margin-bottom:6px">按章节重新刷</div><div class="fin-list">`;
+    scopeUnits.forEach(u=>{
+      const uw=unitWrongIds(u.ui),ud=dueList(uw);
+      h+=`<div class="fin-row"><div class="fin-nm">${subTagHtml(u)}<span>${esc(u.name)}</span></div><div class="fin-acts">${sess.mode==='wrong'&&uw.length?`<button class="smbtn pri" data-wru="${u.ui}">重刷错题(${ud.length||uw.length})</button>`:''}<button class="smbtn" data-rdu="${u.ui}">重刷全章</button></div></div>`;
+    });
+    h+=`</div></div>`;
+  }
+  h+=`</div>`;
+  app.innerHTML=h;
+  document.getElementById('bk').onclick=goBackFromQuiz;
+  document.getElementById('bk2').onclick=home;
+  const bw=document.getElementById('bkwb');if(bw)bw.onclick=wrongBook;
+  const ag=document.getElementById('again');if(ag)ag.onclick=()=>startWrong(due===0,sess.from);
+  app.querySelectorAll('[data-wru]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.wru;const uw=unitWrongIds(ui),ud=dueList(uw);startUnitWrong(ui,ud.length===0,sess.from);});
+  app.querySelectorAll('[data-rdu]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.rdu;redoCurrentChapter(D[ui],sess.from);});
+  window.scrollTo(0,0);
+}
+// 选项乱序：每次出题随机排列，显示字母按位置重新编号；内部仍用原字母判分
+const REFL=/(^|[^A-Za-z0-9])[A-E]([、，,和与及 ]|项|的|对|错|$)/;
+function noShuf(q){return (q.e||'').split('\n').some(x=>!/^\s*[A-E][✓✗]/.test(x)&&REFL.test(x.replace(/[\x01\x02]/g,'')));}
+function getOrd(q){if(!sess.ord)sess.ord={};let o=sess.ord[q.id];
+  if(!o||o.length!==q.o.length){o=q.o.map((_,i)=>i);if(!noShuf(q))for(let i=o.length-1;i>0;i--){const j=rint(i+1);[o[i],o[j]]=[o[j],o[i]];}sess.ord[q.id]=o;}
+  return o;}
+function dispAns(q,x){const o=getOrd(q);return (x==null?q.a.split(''):[...x]).map(v=>String.fromCharCode(65+o.indexOf(v.charCodeAt(0)-65))).sort().join('');}
+function render(id){
+  const q=Q[id||sess.cur],u=D[q.u];const app=document.getElementById('app');
+  const backLabel=sess.from==='wb'?'‹ 错题集':'‹ 返回';
+  const actsHtml=sess.mode==='wrong'
+    ?`<button class="smbtn pri" id="rsuw">↻ 重刷本节错题</button><button class="smbtn" id="rsu">重刷全章</button>`
+    :`<button class="smbtn" id="rsu">↻ 重刷本章节</button>`;
+  let h=`<div class="quizpg"><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${sess.mode==='wrong'?'错题 · ':''}${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div><div class="top-acts">${actsHtml}</div></div><div class="card">`;
+  h+=`<span class="tag ${u.ex==='398'?'ex398':'ex498'}">${u.ex}</span><span class="tag">${q.y}年 ${TN[q.t]}</span>`;
+  if(sess.mode==='wrong')h+=`<span class="tag rev">错题本</span>`;
+  h+=`<div class="stem">${esc(q.s)}</div>`;
+  if(q.t==='判'){
+    h+=`<div class="judge">${['对','错'].map(v=>`<button class="opt" data-v="${v}">${v==='对'?'✓ 对':'✗ 错'}</button>`).join('')}</div>`;
+  }else{
+    h+=getOrd(q).map((oi,pos)=>{const V=String.fromCharCode(65+oi),L=String.fromCharCode(65+pos);return `<button class="opt" data-v="${V}"><span class="L">${L}</span><span>${esc(q.o[oi])}</span></button>`}).join('');
+    if(q.t==='多')h+=`<button class="btn pri" id="sub" disabled>提交</button>`;
+  }
+  h+=`<div id="after"></div></div></div>`;
+  app.innerHTML=h;
+  document.getElementById('bk').onclick=goBackFromQuiz;
+  const rsu=document.getElementById('rsu');if(rsu)rsu.onclick=()=>redoCurrentChapter(u,sess.from);
+  const rsuw=document.getElementById('rsuw');if(rsuw)rsuw.onclick=()=>{
+    const uw=unitWrongIds(u.ui),ud=dueList(uw);
+    if(!uw.length){alert(`「${u.name}」目前没有错题了。`);return;}
+    startUnitWrong(u.ui,ud.length===0,sess.from);
+  };
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b.dataset.v));
+  const sb=document.getElementById('sub');if(sb)sb.onclick=submit;
+  window.scrollTo(0,0);
+}
+function pick(v){
+  if(sess.answered||sess.view!=null)return;const q=Q[sess.cur];
+  if(q.t==='多'){const i=sess.sel.indexOf(v);i<0?sess.sel.push(v):sess.sel.splice(i,1);
+    document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));
+    document.getElementById('sub').disabled=!sess.sel.length;return;}
+  sess.sel=[v];submit();
+}
+function submit(){
+  if(sess.answered||sess.view!=null||!sess.sel.length)return;const q=Q[sess.cur];
+  const mine=sess.sel.slice().sort().join('');const ok=mine===q.a;
+  sess.answered=true;sess.n++;if(ok)sess.right++;
+  const now=Date.now();let s=S.q[q.id];
+  const d=today();
+  let revNote='';
+  if(!s||!s[0]){S.q[q.id]=ok?[1,0,0,0,now]:[2,0,d,1,now];}
+  else if(s[0]===2){
+    const sameDay=s[2]===d;
+    if(ok){
+      if(!sameDay){s[1]++;if(s[1]>=2)s[0]=3;}
+      if(s[0]===3)revNote='连续两天答对，已移出错题集';
+      else if(sameDay)revNote='今日已记录过复习，本次为巩固练习（明天再对可累计移除进度）';
+      else revNote='已连续答对 1 次，明天再答对 1 次即可移出错题集';
+    }else{s[1]=0;s[3]++;}
+    s[2]=d;s[4]=now;
+  }
+  else{if(!ok){S.q[q.id]=[2,0,d,(s[3]||0)+1,now];}}
+
+  save(true);
+  sess.hist.push({id:q.id,sel:sess.sel.slice(),revNote});
+  showAfter(q,sess.sel,ok,revNote);
+}
+// 选项说明开头若只是重复选项（如“爬到树上：…”），显示时去掉；带括号补充或数字单位不同的保留
+function stripPre(o,t){const i=t.indexOf('：');if(i<1||!o)return t;const raw=t.slice(0,i),pre=raw.replace(/[\x01\x02]/g,'');let rest=t.slice(i+1);
+  if(!rest.replace(/[\x01\x02\s。]/g,''))return t;if(/[（(]/.test(pre))return t;
+  const core=[...pre.replace(/[《》“”"\s]/g,'')];if(!core.length)return t;const miss=core.filter(c=>!o.includes(c));
+  if((core.length-miss.length)/core.length<0.6)return t;if(/\d/.test(o)&&miss.length)return t;
+  const op=(raw.match(/\x01/g)||[]).length-(raw.match(/\x02/g)||[]).length;if(op>0)rest='\x01'+rest;return rest;}
+function showAfter(q,sel,ok,revNote){
+  const OE={};if(q.t!=='判'&&q.e)for(const x of q.e.split('\n')){const m=x.trim().match(/^([A-E])([✓✗])\s*([\s\S]*)$/);if(m)OE[m[1]]=m[3];}
+  const hasOE=Object.keys(OE).length>0;
+  document.querySelectorAll('.opt').forEach(b=>{const v=b.dataset.v;const inA=q.t==='判'?v===q.a:q.a.includes(v);const inM=sel.includes(v);
+    b.querySelectorAll('.oe').forEach(e=>e.remove());
+    if(OE[v]&&b.children[1]){let t=OE[v];const o=q.o[v.charCodeAt(0)-65]||'';if(o&&t.startsWith(o+'：'))t=t.slice(o.length+1);else t=stripPre(o,t);if(/^\s*(不对|不是|原文|按题目记|不在里面|错误|正确|对|错|不符|无关)[。．.]?\s*$/.test(t.replace(/[\x01\x02]/g,'')))t=inA?'':'干扰项';if(t)
+      b.children[1].insertAdjacentHTML('beforeend',`<span class="oe">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>')}</span>`);}
+    b.classList.remove('sel');if(inA&&inM)b.classList.add('ok');else if(inM)b.classList.add('bad');else if(inA)b.classList.add(q.t==='多'?'miss':'ok');b.disabled=true;});
+  const sb=document.getElementById('sub');if(sb)sb.remove();
+  let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}${revNote?`<small>${esc(revNote)}</small>`:''}</div><button class="btn pri" id="nx">下一题</button>`;
+  if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题集':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题集':'加入错题集')}</button>`;}
+  const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
+  const ex=q.e?fmtExp(q.e,mk,hasOE):'';
+  if(ex)h+=`<div class="box"><h4>解析</h4>${ex}</div>`;
+  if(q.k||q.kb!=null)h+=`<div class="box book"><h4>原文</h4>${fmtBook(q)}</div>`;
+  document.getElementById('after').innerHTML=h;
+  document.getElementById('nx').onclick=goNext;
+  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save(true);aw.textContent='已加入错题集';aw.disabled=true;};
+}
+// 上一题/下一题：上一题只能回看本次已做的题（显示当时的作答和解析，不能改答案）
+function goPrev(){
+  if(!sess||view.name!=='quiz'||!document.querySelector('.stem'))return;
+  const H=sess.hist;let i;
+  if(sess.view==null)i=sess.answered?H.length-2:H.length-1;else i=sess.view-1;
+  if(i<0)return;showHist(i);
+}
+function goNext(){
+  if(!sess||view.name!=='quiz'||!document.querySelector('.stem'))return;
+  const H=sess.hist;
+  if(sess.view!=null){
+    const last=sess.answered?H.length-2:H.length-1;
+    if(sess.view<last){showHist(sess.view+1);return;}
+    sess.view=null;render();
+    if(sess.answered){const h=H[H.length-1];showAfter(Q[h.id],h.sel,h.sel.slice().sort().join('')===Q[h.id].a,h.revNote);}
+    else if(sess.sel.length){document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));const sb=document.getElementById('sub');if(sb)sb.disabled=false;}
+    return;
+  }
+  if(sess.answered)nextQ();
+}
+function showHist(i){
+  sess.view=i;const h=sess.hist[i];const q=Q[h.id];render(h.id);
+  const sb=document.getElementById('sub');if(sb)sb.remove();
+  showAfter(q,h.sel,h.sel.slice().sort().join('')===q.a,h.revNote);
+}
+(()=>{let x0=null,y0=0,t0=0;
+  document.addEventListener('touchstart',e=>{if(e.touches.length!==1){x0=null;return;}x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();},{passive:true});
+  document.addEventListener('touchend',e=>{if(x0==null)return;const t=e.changedTouches[0];const dx=t.clientX-x0,dy=t.clientY-y0;x0=null;
+    if(Date.now()-t0>800||Math.abs(dx)<60||Math.abs(dx)<1.5*Math.abs(dy))return;
+    if(dx<0)goNext();else goPrev();},{passive:true});
+})();
+function wrongBook(keepScroll){
+  view={name:'wb'};const app=document.getElementById('app');const ids=wrongList();
+  const scopeParts=[];if(S.exam!=='all')scopeParts.push(EXNAME[S.exam]);if(S.sub!=='全部')scopeParts.push(SUBNAME[S.sub]);
+  const scopeTxt=scopeParts.length?' · '+scopeParts.join(' · '):'';
+  let h=`<div><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">错题集 ${ids.length} 题${scopeTxt}</div></div>`;
+  const dn=dueList(ids).length;
+  h+=`<button class="btn pri" id="redo" ${ids.length?'':'disabled'} style="margin:0 0 12px">${dn?`重刷全部错题（今日待刷 ${dn} 题）`:ids.length?`再练全部错题（共 ${ids.length} 题，今日已刷过）`:'重刷全部错题'}</button>`;
+  if(!ids.length){
+    h+=`<div class="card empty">当前范围内错题集是空的</div>`;
+  }else{
+    const groups=[];const byU={};
+    ids.forEach(id=>{const u=Q[id].u;if(!byU[u]){byU[u]=[];groups.push(u);}byU[u].push(id);});
+    h+=`<div class="hint" style="margin:0 0 8px">已按${S.sort==='pred'?'「2027 预测比重」':'「22 年历史均分」'}排列各章错题，可按章节单独重刷或重置：</div>`;
+    groups.forEach(ui=>{
+      const u=D[ui],uIds=byU[ui],uDue=dueList(uIds);
+      const redoLabel=uDue.length?`重刷本节错题 (${uDue.length})`:`再练本节错题 (${uIds.length})`;
+      h+=`<div class="card"><div class="wb-head"><div class="wb-info"><div class="wb-title">${subTagHtml(u)}<span>${esc(u.name)}</span></div><div class="wb-sub">共 ${uIds.length} 道错题 · 今日待刷 ${uDue.length} 题</div></div><div class="wb-acts"><button class="smbtn pri" data-wru="${ui}">${redoLabel}</button><button class="smbtn" data-rdu="${ui}">重刷全章</button><button class="smbtn warn" data-clrw="${ui}">清空错题</button></div></div><div class="wb-list">`;
+      h+=uIds.map(id=>{const q=Q[id],s=S.q[id];
+        return `<div class="wb"><span class="tag">${q.y} ${TN[q.t]}</span><span class="tag rev">错${s[3]||1}次${s[1]?' · 已连对1次':''}</span><div>${esc(q.s)}</div></div>`;
+      }).join('');
+      h+=`</div></div>`;
+    });
+  }
+  h+='</div>';app.innerHTML=h;
+  document.getElementById('bk').onclick=home;
+  document.getElementById('redo').onclick=()=>startWrong(dn===0,'wb');
+  app.querySelectorAll('[data-wru]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.wru;const uw=unitWrongIds(ui),ud=dueList(uw);startUnitWrong(ui,ud.length===0,'wb');});
+  app.querySelectorAll('[data-rdu]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.rdu;redoCurrentChapter(D[ui],'wb');});
+  app.querySelectorAll('[data-clrw]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.clrw;clearUnitWrong(D[ui]);});
+  if(keepScroll!==true)window.scrollTo(0,0);
+}
+// 键盘不参与做题：没有快捷键，回车/空格也不会触发按钮（防误触），只能点
+document.addEventListener('keydown',e=>{
+  const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&(e.target.type==='text'||e.target.type==='password')))return;
+  if(e.key==='Enter'||e.key===' '||e.key==='Spacebar'){e.preventDefault();e.stopPropagation();}
+},true);
+document.addEventListener('keyup',e=>{const tg=e.target.tagName;if(tg==='TEXTAREA'||(tg==='INPUT'&&(e.target.type==='text'||e.target.type==='password')))return;if(e.key===' '||e.key==='Spacebar'){e.preventDefault();}},true);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&canSave&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false&&Date.now()-lastAutoTry>15000)syncNow(true);});
+
+home();
+if(canSave&&SYNC.token&&SYNC.gistId&&SYNC.auto!==false)syncNow(true);
+</script>
+</body>
+</html>

@@ -7,8 +7,12 @@
 import json
 import os
 import re
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+
+from predict_2027 import compute_unit_prediction  # noqa: E402
 ZONGHE = os.path.join(ROOT, "data", "zonghe")
 SHELL = os.path.join(ROOT, "刷题", "_shell_zonghe.html")
 OUT = os.path.join(ROOT, "quiz_zonghe.html")
@@ -124,14 +128,19 @@ def build_data():
     sub_order = {"法理学": 0, "中国宪法学": 1, "中国法制史": 2}
     for (subj, node), u in units.items():
         u["qs"].sort(key=lambda x: (x["y"], int(x["id"].split("-")[1])))
+        pred = compute_unit_prediction(subj, node, u["qs"])
         data.append({
             "sub": subj,
             "name": node,
-            "w": round(u["score"] / 22.0, 1),
+            "w": pred["w"],
+            "w5": pred["w5"],
+            "wh": pred["wh"],
+            "bt": pred["bt"],
+            "pt": pred["pt"],
             "L": len(u["qs"]),
             "qs": u["qs"],
         })
-    data.sort(key=lambda u: (-u["w"], -u["L"], sub_order.get(u["sub"], 9), u["name"]))
+    data.sort(key=lambda u: (-u["w"], -u["w5"], -u["L"], sub_order.get(u["sub"], 9), u["name"]))
     return data, kb
 
 

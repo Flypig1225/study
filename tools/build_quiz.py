@@ -14,6 +14,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 
 from clean_questions import load_clean_questions  # noqa: E402
+from predict_2027 import compute_unit_prediction  # noqa: E402
 
 SHELL = os.path.join(ROOT, "刷题", "_shell.html")
 OUT = os.path.join(ROOT, "quiz.html")
@@ -137,15 +138,20 @@ def build_data(allow_missing=False):
     data = []
     for (subj, node), u in units.items():
         u["qs"].sort(key=lambda x: (x["y"], int(x["id"].split("-")[1])))
+        pred = compute_unit_prediction(subj, node, u["qs"])
         data.append({
             "sub": subj,
             "name": node,
-            "w": round(u["score"] / 22.0, 1),
+            "w": pred["w"],
+            "w5": pred["w5"],
+            "wh": pred["wh"],
+            "bt": pred["bt"],
+            "pt": pred["pt"],
             "L": len(u["qs"]),
             "qs": u["qs"],
         })
-    # 与参考模板一致：全局按年均占分 w 降序排列（同 w 按题量降序、科目、名称）
-    data.sort(key=lambda u: (-u["w"], -u["L"], u["sub"] != "刑法", u["name"]))
+    # 默认按 2027 预测权重降序排列（同权按近5年、题量、科目、名称）
+    data.sort(key=lambda u: (-u["w"], -u["w5"], -u["L"], u["sub"] != "刑法", u["name"]))
     return data, kb
 
 
