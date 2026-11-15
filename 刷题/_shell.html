@@ -29,23 +29,34 @@ header h1{font-size:19px;margin:0;flex:1}
 .addwb{display:block;margin:6px 2px 0 auto;background:none;border:0;padding:4px 2px;font-size:13px;color:var(--sub);cursor:pointer}
 .addwb:disabled{cursor:default;opacity:.7}
 .hint{font-size:13px;color:var(--sub);margin-top:6px}
+.ulhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.ulhead .utitle{font-size:14px;font-weight:600;color:var(--ink)}
+.sortbtns{display:flex;gap:6px}
+.smbtn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
 .unit{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid var(--line);cursor:pointer}
 .unit:first-child{border-top:0}
 .unit .rk{width:26px;color:var(--sub);font-size:13px;text-align:right;flex:none}
 .unit .nm{flex:1;min-width:0}
-.unit .nm div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.unit .meta{font-size:12.5px;color:var(--sub)}
-.unit .nm div.meta{white-space:normal}
-.bar{height:5px;background:#ececea;border-radius:3px;margin-top:4px;overflow:hidden}
+.unit .nm .title-line{display:flex;align-items:center;gap:5px;flex-wrap:wrap;line-height:1.45}
+.unit .meta{font-size:12.5px;color:var(--sub);margin-top:2px}
+.unit .nm div.meta,.unit .nm div.pt{white-space:normal}
+.unit .pt{font-size:12px;color:#5b5b62;margin-top:1px;line-height:1.4}
+.bar{height:5px;background:#ececea;border-radius:3px;margin-top:5px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc)}
 .unit.drop{opacity:.6}
-.unit .rs{flex:none;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;padding:3px 9px;font-size:12.5px;cursor:pointer}
+.unit .rs{flex:none;border:1px solid var(--line);background:var(--card);color:var(--sub);border-radius:8px;padding:4px 9px;font-size:12.5px;cursor:pointer}
 .sw{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--sub);margin:4px 0 8px}
-.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.back{border:0;background:none;font-size:15px;color:var(--acc);cursor:pointer;padding:6px 0}
-.top .where{flex:1;font-size:13px;color:var(--sub);text-align:right;line-height:1.35}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.back{border:0;background:none;font-size:15px;color:var(--acc);cursor:pointer;padding:6px 0;flex:none}
+.top .where{flex:1;min-width:130px;font-size:13px;color:var(--sub);text-align:right;line-height:1.35}
+.top-acts{display:flex;gap:6px;flex:none;margin-left:auto}
 .tag{display:inline-block;font-size:12.5px;color:var(--sub);background:#f0f0ee;border-radius:6px;padding:1px 8px;margin-right:6px}
 .tag.rev{background:#fff4e0;color:var(--warn)}
+.htag{display:inline-block;font-size:11.5px;border-radius:5px;padding:0 6px;font-weight:600;line-height:1.55}
+.htag.核心{background:#eef4ff;color:#1f58c4}
+.htag.新法{background:#fff3dc;color:#9a5b08}
+.htag.回补{background:#f3ebff;color:#6c35b5}
+.htag.降权{background:#f0f0ee;color:#6b6b70}
 .stem{font-size:18px;margin:10px 0 14px;line-height:1.7;white-space:pre-line}
 .opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:9px;font-size:16.5px;cursor:pointer;color:var(--ink)}
 .opt .L{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid #c9c9c6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
@@ -91,8 +102,9 @@ textarea{width:100%;height:90px;font-size:13px;border:1px solid var(--line);bord
 .syncstat{font-size:13.5px;color:var(--sub);flex:1;min-width:180px}
 .syncstat b{color:var(--ink)}
 .syncbtns{display:flex;gap:6px;flex:none}
-.syncbtns button,.smbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 11px;font-size:13px;cursor:pointer}
+.syncbtns button,.smbtn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;padding:5px 10px;font-size:13px;cursor:pointer;white-space:nowrap}
 .smbtn.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+.smbtn.warn{color:var(--bad);border-color:#efc2c2}
 .syncpanel{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
 .syncsec{margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
 .syncsec:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
@@ -101,9 +113,19 @@ textarea{width:100%;height:90px;font-size:13px;border:1px solid var(--line);bord
 .syncmsg{font-size:13px;margin-top:6px;padding:6px 10px;border-radius:8px;background:#f4f5f7;color:var(--ink)}
 .syncmsg.ok{background:var(--okbg);color:var(--ok)}
 .syncmsg.bad{background:var(--badbg);color:var(--bad)}
+.wb-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;padding-bottom:10px;border-bottom:1px solid var(--line);margin-bottom:2px}
+.wb-info{flex:1;min-width:190px}
+.wb-title{font-weight:700;font-size:15.5px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.wb-sub{font-size:12.5px;color:var(--sub);margin-top:2px}
+.wb-acts{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .wb{padding:10px 0;border-top:1px solid var(--line);font-size:15px}
-.wb:first-child{border-top:0}
+.wb-list .wb:first-child{border-top:0}
 .wb .a{color:var(--ok);font-weight:600}
+.fin-list{text-align:left;margin-top:6px}
+.fin-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.fin-row:first-child{border-top:0}
+.fin-nm{flex:1;min-width:0;font-size:14px}
+.fin-acts{display:flex;gap:6px;flex:none}
 
 .kbd{font-size:12px;color:var(--sub);text-align:center;margin-top:8px}
 @media (max-width:520px){.kbd{display:none}.stem{font-size:17px}}
@@ -150,7 +172,9 @@ const Q={};D.forEach((u,ui)=>{u.ui=ui;u.qs.forEach((q,qi)=>{q.u=ui;q.qi=qi;Q[q.i
 const KEY='fsjc_v1';const SYNC_KEY='fsjc_sync_v1';const GIST_FILE='fsjc_progress_v1.json';
 let canSave=true;let S;
 try{S=JSON.parse(localStorage.getItem(KEY)||'null');localStorage.setItem(KEY+'_t','1');}catch(e){canSave=false;}
-if(!S||!S.q)S={q:{},sub:'全部',drop:false,clearedAt:0};
+if(!S||!S.q)S={q:{},sub:'全部',sort:'pred',drop:false,clearedAt:0};
+if(!S.sub||!SUBNAME[S.sub])S.sub='全部';
+if(!S.sort)S.sort='pred';
 if(!S.clearedAt)S.clearedAt=0;
 if(!S.v2){const now=Date.now();for(const id in S.q){if(S.q[id].length<5)S.q[id][4]=now;}S.v2=1;}
 let SYNC={token:'',gistId:'',lastSync:0,auto:true};
@@ -192,7 +216,7 @@ function mergeProgress(localState,rawRemote){
     nq[id]=pick;
     if(pickedRemote)fromRemote++;else{keptLocal++;if(localNewer)needPush=true;}
   }
-  return {state:{q:nq,sub:localState.sub||'全部',drop:!!localState.drop,v2:1,clearedAt},fromRemote,keptLocal,totalAfter:Object.keys(nq).length,needPush,remoteCleared:rCleared};
+  return {state:{q:nq,sub:localState.sub||'全部',sort:localState.sort||'pred',drop:!!localState.drop,v2:1,clearedAt},fromRemote,keptLocal,totalAfter:Object.keys(nq).length,needPush,remoteCleared:rCleared};
 }
 function fmtTime(ms){if(!ms)return '';const d=new Date(ms);return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`;}
 function setSyncMsg(cls,text){syncMsg={cls,text};const el=document.getElementById('syncmsg');if(el){el.className='syncmsg'+(cls?' '+cls:'');el.textContent=text;el.style.display=text?'block':'none';}}
@@ -264,11 +288,18 @@ const today=()=>Math.floor((Date.now()+8*36e5)/864e5);  // 北京时间的日期
 const st=id=>{const s=S.q[id];return s&&s[0]?s:undefined};  // status 0 = 这一节被重置过，当作没做
 function inScope(u){return S.sub==='全部'||u.sub===S.sub}
 function qInScope(q){return inScope(D[q.u])}
+function getUnits(filtered){
+  let us=filtered?D.filter(inScope):D.slice();
+  if(S.sort==='hist')us.sort((a,b)=>((b.wh??b.w)-(a.wh??a.w))||(b.L-a.L)||(a.ui-b.ui));
+  return us;
+}
+function unitRankMap(){const m={};getUnits(false).forEach((u,i)=>{m[u.ui]=i;});return m;}
 function rint(n){try{const c=window.crypto;if(c&&c.getRandomValues){const b=new Uint32Array(1),lim=4294967296-4294967296%n;let x;do{c.getRandomValues(b);x=b[0];}while(x>=lim);return x%n;}}catch(e){}return Math.floor(Math.random()*n);}
-function dueList(){const d=today();return wrongList().filter(id=>S.q[id][2]!==d);}  // 今天还没在错题本里做过的
-function wrongList(){return Object.keys(S.q).filter(id=>Q[id]&&S.q[id][0]===2&&qInScope(Q[id])).sort((a,b)=>Q[a].u-Q[b].u||Q[a].qi-Q[b].qi);}
+function wrongList(){const rm=unitRankMap();return Object.keys(S.q).filter(id=>Q[id]&&S.q[id][0]===2&&qInScope(Q[id])).sort((a,b)=>rm[Q[a].u]-rm[Q[b].u]||Q[a].qi-Q[b].qi);}
+function dueList(ids){const d=today();return (ids||wrongList()).filter(id=>S.q[id][2]!==d);}
+function unitWrongIds(ui){return D[ui].qs.map(q=>q.id).filter(id=>{const s=st(id);return s&&s[0]===2;});}
 function nextNew(unitOnly){
-  const us=unitOnly!=null?[D[unitOnly]]:D.filter(inScope);
+  const us=unitOnly!=null?[D[unitOnly]]:getUnits(true);
   for(const u of us){const l=u.qs.filter(q=>!st(q.id)&&q.id!==(sess&&sess.cur));if(l.length)return l[rint(l.length)].id;}
   for(const u of us){for(const q of u.qs){if(!st(q.id))return q.id;}}
   return null;
@@ -284,17 +315,17 @@ function fmtExp(s,mk,skipOpt){mk=mk||{};const t=esc(s).replace(/┄+/g,'\n').rep
     return `<div class="xp">${x}</div>`;});h0=[...h0.filter(x=>x.startsWith('<div class="xm"')),...h0.filter(x=>!x.startsWith('<div class="xm"'))].join('');const XM=/(<div class="xm"><span class="xl">记法<\/span>(?:(?!<\/div>)[\s\S])*)<\/div>(?=<div class="xm"><span class="xl">记法<\/span>)<div class="xm"><span class="xl">记法<\/span>/g;let pv;do{pv=h0;h0=h0.replace(XM,'$1<br>');}while(h0!==pv);return h0;}
 function home(keepScroll){
   view={name:'home'};const app=document.getElementById('app');
-  const us=D.filter(inScope);
+  const us=getUnits(true);
   let tot=0,done=0,right=0,ans=0;
   us.forEach(u=>u.qs.forEach(q=>{tot++;const s=st(q.id);if(s){done++;ans++;if(s[0]!==2)right++;}}));
   const wr=wrongList().length;
-  let h=`<div><header><h1>法硕基础课 · 真题刷题</h1></header>`;
+  let h=`<div><header><h1>法硕基础课 · 真题刷题</h1><a class="smbtn" href="quiz_all.html" style="text-decoration:none">全科合一 ↗</a></header>`;
   if(!canSave)h+=`<div class="warnbar">当前是预览窗口，做题记录存不下来。请下载这个文件，用手机或电脑的浏览器打开后再做题。</div>`;
   h+=`<div class="tabs">${SUBS.map(s=>`<div class="tab ${S.sub===s?'on':''}" data-sub="${s}">${SUBNAME[s]}</div>`).join('')}</div>`;
-  h+=`<div class="card"><div class="stats"><div><b>${done}/${tot}</b><span>已做</span></div><div><b>${ans?Math.round(right/ans*100):0}%</b><span>正确率</span></div><div><b>${wr}</b><span>错题本</span></div></div>
+  h+=`<div class="card"><div class="stats"><div><b>${done}/${tot}</b><span>已做</span></div><div><b>${ans?Math.round(right/ans*100):0}%</b><span>正确率</span></div><div><b>${wr}</b><span>错题集</span></div></div>
   <button class="btn pri" id="go">${done?'继续刷题':'开始刷题'}</button>
-  <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题本（${wr} 题）</button></div>`;
-  h+=`<div class="card"><div id="ul"></div></div>`;
+  <button class="btn sec" id="wb" ${wr?'':'disabled'}>错题集（${wr} 题）</button></div>`;
+  h+=`<div class="card"><div class="ulhead"><span class="utitle">章节列表（${us.length} 章）</span><div class="sortbtns"><button class="smbtn ${S.sort==='pred'?'on':''}" data-sort="pred">2027预测比重</button><button class="smbtn ${S.sort==='hist'?'on':''}" data-sort="hist">22年历史均分</button></div></div><div id="ul"></div></div>`;
   const cloudOn=!!(SYNC.token&&SYNC.gistId);
   const syncLabel=cloudOn?`云同步：<b>已连接</b>${SYNC.lastSync?' · 上次 '+fmtTime(SYNC.lastSync):''}`:'跨设备同步（电脑 ↔ 手机）：未配置云同步';
   h+=`<div class="card"><div class="syncrow"><div class="syncstat" id="syncstat">${syncLabel}</div><div class="syncbtns">${cloudOn?'<button class="smbtn pri" id="syncnow">立即同步</button>':''}<button class="smbtn" id="synctog">${syncOpen?'收起':'同步设置'}</button></div></div>`;
@@ -336,12 +367,21 @@ function home(keepScroll){
     const qs=u.qs;if(!qs.length)return;
     let d=0,r=0;qs.forEach(q=>{const s=st(q.id);if(s){d++;if(s[0]!==2)r++;}});
     rk++;
-    const el=$(`<div class="unit"><div class="rk">${rk}</div><div class="nm"><div>${S.sub==='全部'?`<span class="tag">${SUBNAME[u.sub]||u.sub}</span>`:''}${esc(u.name)}</div><div class="meta">${(+u.w).toFixed(1)}分/年 · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}</div><div class="bar"><i style="width:${qs.length?d/qs.length*100:0}%"></i></div></div>${u.qs.some(q=>st(q.id))?'<button class="rs">重置</button>':''}</div>`);
-    el.onclick=()=>startSess('unit',u.ui);ul.appendChild(el);
-    const rb=el.querySelector('.rs');if(rb)rb.onclick=e=>{e.stopPropagation();resetUnit(u);};
+    const showBadge=S.sort==='pred'&&u.bt;
+    const wh=u.wh!=null?u.wh:u.w;
+    const w5=u.w5!=null?u.w5:u.w;
+    const metaTxt=S.sort==='pred'
+      ?`2027预测 ${(+u.w).toFixed(1)} · 近5年${(+w5).toFixed(1)}分/年 (22年均${(+wh).toFixed(1)}) · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}`
+      :`22年均 ${(+wh).toFixed(1)}分/年 · 近5年${(+w5).toFixed(1)}分/年 · ${d}/${qs.length}题${d?` · 正确率${Math.round(r/d*100)}%`:''}`;
+    const ptHtml=(S.sort==='pred'&&u.pt)?`<div class="pt">${esc(u.pt)}</div>`:'';
+    const rstLabel=d>=qs.length?'重刷':'重置';
+    const el=$(`<div class="unit"><div class="rk">${rk}</div><div class="nm"><div class="title-line">${S.sub==='全部'?`<span class="tag">${SUBNAME[u.sub]||u.sub}</span>`:''}<span>${esc(u.name)}</span>${showBadge?`<span class="htag ${esc(u.bt)}">${esc(u.bt)}</span>`:''}</div><div class="meta">${metaTxt}</div>${ptHtml}<div class="bar"><i style="width:${qs.length?d/qs.length*100:0}%"></i></div></div>${d?`<button class="rs">${rstLabel}</button>`:''}</div>`);
+    el.onclick=()=>startSess('unit',u.ui,false,'home');ul.appendChild(el);
+    const rb=el.querySelector('.rs');if(rb)rb.onclick=e=>{e.stopPropagation();if(d>=qs.length)redoCurrentChapter(u,'home');else resetUnit(u);};
   });
   app.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.sub=t.dataset.sub;save(false);home();});
-  document.getElementById('go').onclick=()=>startSess('main');
+  app.querySelectorAll('[data-sort]').forEach(b=>b.onclick=()=>{S.sort=b.dataset.sort;save(false);home(true);});
+  document.getElementById('go').onclick=()=>startSess('main',null,false,'home');
   document.getElementById('wb').onclick=wrongBook;
   document.getElementById('rst').onclick=()=>{if(confirm('确定清空全部做题记录？清空后将无法恢复（开启云同步时也会同步清空）。')){S.q={};S.clearedAt=Date.now();save(true);home();}};
   document.getElementById('synctog').onclick=()=>{syncOpen=!syncOpen;home(true);};
@@ -400,26 +440,96 @@ function home(keepScroll){
 }
 function resetUnit(u){
   const ids=u.qs.map(q=>q.id).filter(id=>st(id));if(!ids.length)return;
-  if(!confirm(`重置「${u.name}」？\n这一节已做的 ${ids.length} 题会全部变回没做过（也会移出错题本）。`))return;
+  if(!confirm(`重置「${u.name}」？\n这一节已做的 ${ids.length} 题会全部变回没做过（也会移出错题集）。`))return;
   const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
   save(true);home(true);
 }
-function startWrong(){startSess('wrong');}
-function startSess(mode,unit){view={name:'quiz'};sess={mode,unit,queue:mode==='wrong'?(a=>{for(let i=a.length-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;})(dueList()):[],total:0,n:0,right:0,cur:null,answered:false,sel:[],hist:[],view:null};sess.total=sess.queue.length;nextQ();}
+function redoCurrentChapter(u,from){
+  const ids=u.qs.map(q=>q.id).filter(id=>st(id));
+  const msg=ids.length
+    ?`确定重新刷「${u.name}」？\n本章节已做的 ${ids.length} 题将重置为未做状态，并立即从头开始本章节（共 ${u.qs.length} 题）。`
+    :`切换到单章刷题「${u.name}」（共 ${u.qs.length} 题）？`;
+  if(!confirm(msg))return;
+  if(ids.length){const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});save(true);}
+  startSess('unit',u.ui,false,from||(sess&&sess.from)||'home');
+}
+function clearUnitWrong(u){
+  const ids=unitWrongIds(u.ui);if(!ids.length)return;
+  if(!confirm(`确定清空「${u.name}」的 ${ids.length} 道错题？\n这些题将移出错题集并恢复为未做状态，方便重新刷。`))return;
+  const now=Date.now();ids.forEach(id=>{S.q[id]=[0,0,0,0,now];});
+  save(true);wrongBook(true);
+}
+function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=rint(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startWrong(force,from){startSess('wrong',null,!!force,from||'wb');}
+function startUnitWrong(ui,force,from){startSess('wrong',ui,!!force,from||'wb');}
+function startSess(mode,unit,force,from){
+  view={name:'quiz'};
+  let queue=[];
+  if(mode==='wrong'){
+    const baseIds=unit!=null?unitWrongIds(unit):wrongList();
+    queue=shuffleArr(force?baseIds.slice():dueList(baseIds));
+  }
+  sess={mode,unit,force:!!force,from:from||(mode==='wrong'?'wb':'home'),queue,total:queue.length,n:0,right:0,cur:null,answered:false,sel:[],hist:[],view:null};
+  nextQ();
+}
 function nextQ(){
   let id=null,isRev=false;
   if(sess.mode==='wrong'){
-    while(sess.queue.length){const c=sess.queue.shift();const s=st(c);if(s&&s[0]===2&&s[2]!==today()){id=c;isRev=true;break;}}
+    while(sess.queue.length){const c=sess.queue.shift();const s=st(c);if(s&&s[0]===2&&(sess.force||s[2]!==today())){id=c;isRev=true;break;}}
   }else id=nextNew(sess.mode==='unit'?sess.unit:null);
   if(!id){finish();return;}
   if(sess.ord)delete sess.ord[id];sess.cur=id;sess.isRev=isRev;sess.answered=false;sess.sel=[];sess.view=null;render();
 }
+function goBackFromQuiz(){if(sess&&sess.from==='wb')wrongBook();else home();}
 function finish(){
-  const app=document.getElementById('app');const left=wrongList().length,due=dueList().length;
-  const msg=sess.mode==='wrong'?(!left?'错题本清空了！':due?`这一轮错题刷完了，今天还有 ${due} 题没做。`:`今天的错题都刷完了，明天再来。错题本里还有 ${left} 题。`):sess.mode==='unit'?'这一节的新题都做完了。':'这个范围里的新题都做完了。';
-  app.innerHTML=`<div><div class="top"><button class="back" id="bk">‹ 返回</button></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>${sess.mode==='wrong'&&due?'<button class="btn pri" id="again">继续刷</button>':''}<button class="btn sec" id="bk2">回首页</button></div>`;
-  document.getElementById('bk').onclick=document.getElementById('bk2').onclick=home;
-  const ag=document.getElementById('again');if(ag)ag.onclick=()=>startWrong();
+  const app=document.getElementById('app');
+  const backLabel=sess.from==='wb'?'‹ 错题集':'‹ 返回';
+  if(sess.mode==='unit'){
+    const u=D[sess.unit];
+    app.innerHTML=`<div><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">「${esc(u.name)}」的新题都做完了！</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div><button class="btn pri" id="rdu">↻ 重新刷「${esc(u.name)}」（重置本节并重做）</button>${sess.from==='wb'?'<button class="btn sec" id="bkwb">回错题集</button>':''}<button class="btn sec" id="bk2">回首页</button></div>`;
+    document.getElementById('bk').onclick=goBackFromQuiz;
+    document.getElementById('rdu').onclick=()=>redoCurrentChapter(u,sess.from);
+    const bw=document.getElementById('bkwb');if(bw)bw.onclick=wrongBook;
+    document.getElementById('bk2').onclick=home;
+    window.scrollTo(0,0);return;
+  }
+  if(sess.mode==='wrong'&&sess.unit!=null){
+    const u=D[sess.unit];
+    const uLeft=unitWrongIds(sess.unit),uDue=dueList(uLeft);
+    const msg=!uLeft.length?`「${u.name}」的错题已清空！`:uDue.length?`「${u.name}」这一轮错题刷完了，今天还有 ${uDue.length} 题未练。`:`「${u.name}」的错题今日已刷完（本节错题集还有 ${uLeft.length} 题，明天再来或点击再练一遍）。`;
+    app.innerHTML=`<div><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>${uLeft.length?`<button class="btn pri" id="again">↻ ${uDue.length?`继续刷本节错题（今日 ${uDue.length} 题）`:`再练一遍本节错题（${uLeft.length} 题）`}</button>`:''}<button class="btn sec" id="rdu">↻ 重刷「${esc(u.name)}」全章节</button><button class="btn sec" id="bkwb">回错题集</button><button class="btn sec" id="bk2">回首页</button></div>`;
+    document.getElementById('bk').onclick=goBackFromQuiz;
+    const ag=document.getElementById('again');if(ag)ag.onclick=()=>startUnitWrong(sess.unit,uDue.length===0,sess.from);
+    document.getElementById('rdu').onclick=()=>redoCurrentChapter(u,sess.from);
+    document.getElementById('bkwb').onclick=wrongBook;
+    document.getElementById('bk2').onclick=home;
+    window.scrollTo(0,0);return;
+  }
+  const left=wrongList().length,due=dueList().length;
+  const msg=sess.mode==='wrong'?(!left?'错题集清空了！':due?`这一轮错题刷完了，今天还有 ${due} 题没做。`:`今天的错题都刷完了，明天再来。错题集里还有 ${left} 题。`):'这个范围里的新题都做完了。';
+  const scopeUnits=getUnits(true).filter(u=>sess.mode!=='wrong'||unitWrongIds(u.ui).length>0);
+  let h=`<div><div class="top"><button class="back" id="bk">${backLabel}</button></div><div class="card empty"><div style="font-size:18px;color:var(--ink);margin-bottom:6px">${msg}</div>本次做了 ${sess.n} 题，对 ${sess.right} 题。</div>`;
+  if(sess.mode==='wrong'&&left){
+    h+=`<button class="btn pri" id="again">${due?`继续刷全部错题（今日 ${due} 题）`:`再练一遍全部错题（${left} 题）`}</button>`;
+  }
+  if(sess.from==='wb')h+=`<button class="btn sec" id="bkwb">回错题集</button>`;
+  h+=`<button class="btn sec" id="bk2">回首页</button>`;
+  if(scopeUnits.length){
+    h+=`<div class="card" style="margin-top:12px"><div style="font-weight:600;margin-bottom:6px">按章节重新刷</div><div class="fin-list">`;
+    scopeUnits.forEach(u=>{
+      const uw=unitWrongIds(u.ui),ud=dueList(uw);
+      h+=`<div class="fin-row"><div class="fin-nm"><span class="tag">${SUBNAME[u.sub]||u.sub}</span><span>${esc(u.name)}</span></div><div class="fin-acts">${sess.mode==='wrong'&&uw.length?`<button class="smbtn pri" data-wru="${u.ui}">重刷错题(${ud.length||uw.length})</button>`:''}<button class="smbtn" data-rdu="${u.ui}">重刷全章</button></div></div>`;
+    });
+    h+=`</div></div>`;
+  }
+  h+=`</div>`;
+  app.innerHTML=h;
+  document.getElementById('bk').onclick=goBackFromQuiz;
+  document.getElementById('bk2').onclick=home;
+  const bw=document.getElementById('bkwb');if(bw)bw.onclick=wrongBook;
+  const ag=document.getElementById('again');if(ag)ag.onclick=()=>startWrong(due===0,sess.from);
+  app.querySelectorAll('[data-wru]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.wru;const uw=unitWrongIds(ui),ud=dueList(uw);startUnitWrong(ui,ud.length===0,sess.from);});
+  app.querySelectorAll('[data-rdu]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.rdu;redoCurrentChapter(D[ui],sess.from);});
   window.scrollTo(0,0);
 }
 // 选项乱序：每次出题随机排列，显示字母按位置重新编号；内部仍用原字母判分
@@ -431,8 +541,13 @@ function getOrd(q){if(!sess.ord)sess.ord={};let o=sess.ord[q.id];
 function dispAns(q,x){const o=getOrd(q);return (x==null?q.a.split(''):[...x]).map(v=>String.fromCharCode(65+o.indexOf(v.charCodeAt(0)-65))).sort().join('');}
 function render(id){
   const q=Q[id||sess.cur],u=D[q.u];const app=document.getElementById('app');
-  let h=`<div class="quizpg"><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div></div><div class="card">`;
+  const backLabel=sess.from==='wb'?'‹ 错题集':'‹ 返回';
+  const actsHtml=sess.mode==='wrong'
+    ?`<button class="smbtn pri" id="rsuw">↻ 重刷本节错题</button><button class="smbtn" id="rsu">重刷全章</button>`
+    :`<button class="smbtn" id="rsu">↻ 重刷本章节</button>`;
+  let h=`<div class="quizpg"><div class="top"><button class="back" id="bk">${backLabel}</button><div class="where">${sess.mode==='wrong'?'错题 · ':''}${esc(SUBNAME[u.sub]||u.sub)} · ${esc(u.name)}</div><div class="top-acts">${actsHtml}</div></div><div class="card">`;
   h+=`<span class="tag">${q.y}年 ${TN[q.t]}</span>`;
+  if(sess.mode==='wrong')h+=`<span class="tag rev">错题本</span>`;
   h+=`<div class="stem">${esc(q.s)}</div>`;
   if(q.t==='判'){
     h+=`<div class="judge">${['对','错'].map(v=>`<button class="opt" data-v="${v}">${v==='对'?'✓ 对':'✗ 错'}</button>`).join('')}</div>`;
@@ -442,7 +557,13 @@ function render(id){
   }
   h+=`<div id="after"></div></div></div>`;
   app.innerHTML=h;
-  document.getElementById('bk').onclick=home;
+  document.getElementById('bk').onclick=goBackFromQuiz;
+  const rsu=document.getElementById('rsu');if(rsu)rsu.onclick=()=>redoCurrentChapter(u,sess.from);
+  const rsuw=document.getElementById('rsuw');if(rsuw)rsuw.onclick=()=>{
+    const uw=unitWrongIds(u.ui),ud=dueList(uw);
+    if(!uw.length){alert(`「${u.name}」目前没有错题了。`);return;}
+    startUnitWrong(u.ui,ud.length===0,sess.from);
+  };
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(b.dataset.v));
   const sb=document.getElementById('sub');if(sb)sb.onclick=submit;
   window.scrollTo(0,0);
@@ -460,13 +581,23 @@ function submit(){
   sess.answered=true;sess.n++;if(ok)sess.right++;
   const now=Date.now();let s=S.q[q.id];
   const d=today();
+  let revNote='';
   if(!s||!s[0]){S.q[q.id]=ok?[1,0,0,0,now]:[2,0,d,1,now];}
-  else if(s[0]===2){if(ok){if(s[2]!==d){s[1]++;if(s[1]>=2)s[0]=3;}}else{s[1]=0;s[3]++;}s[2]=d;s[4]=now;}  // 错题本：每天最多算一次，连续两天做对才移出
+  else if(s[0]===2){
+    const sameDay=s[2]===d;
+    if(ok){
+      if(!sameDay){s[1]++;if(s[1]>=2)s[0]=3;}
+      if(s[0]===3)revNote='连续两天答对，已移出错题集';
+      else if(sameDay)revNote='今日已记录过复习，本次为巩固练习（明天再对可累计移除进度）';
+      else revNote='已连续答对 1 次，明天再答对 1 次即可移出错题集';
+    }else{s[1]=0;s[3]++;}
+    s[2]=d;s[4]=now;
+  }
   else{if(!ok){S.q[q.id]=[2,0,d,(s[3]||0)+1,now];}}
 
   save(true);
-  sess.hist.push({id:q.id,sel:sess.sel.slice()});
-  showAfter(q,sess.sel,ok);
+  sess.hist.push({id:q.id,sel:sess.sel.slice(),revNote});
+  showAfter(q,sess.sel,ok,revNote);
 }
 // 选项说明开头若只是重复选项（如“爬到树上：…”），显示时去掉；带括号补充或数字单位不同的保留
 function stripPre(o,t){const i=t.indexOf('：');if(i<1||!o)return t;const raw=t.slice(0,i),pre=raw.replace(/[\x01\x02]/g,'');let rest=t.slice(i+1);
@@ -474,7 +605,7 @@ function stripPre(o,t){const i=t.indexOf('：');if(i<1||!o)return t;const raw=t.
   const core=[...pre.replace(/[《》“”"\s]/g,'')];if(!core.length)return t;const miss=core.filter(c=>!o.includes(c));
   if((core.length-miss.length)/core.length<0.6)return t;if(/\d/.test(o)&&miss.length)return t;
   const op=(raw.match(/\x01/g)||[]).length-(raw.match(/\x02/g)||[]).length;if(op>0)rest='\x01'+rest;return rest;}
-function showAfter(q,sel,ok){
+function showAfter(q,sel,ok,revNote){
   const OE={};if(q.t!=='判'&&q.e)for(const x of q.e.split('\n')){const m=x.trim().match(/^([A-E])([✓✗])\s*([\s\S]*)$/);if(m)OE[m[1]]=m[3];}
   const hasOE=Object.keys(OE).length>0;
   document.querySelectorAll('.opt').forEach(b=>{const v=b.dataset.v;const inA=q.t==='判'?v===q.a:q.a.includes(v);const inM=sel.includes(v);
@@ -483,15 +614,15 @@ function showAfter(q,sel,ok){
       b.children[1].insertAdjacentHTML('beforeend',`<span class="oe">${esc(t).replace(/\x01/g,'<b>').replace(/\x02/g,'</b>')}</span>`);}
     b.classList.remove('sel');if(inA&&inM)b.classList.add('ok');else if(inM)b.classList.add('bad');else if(inA)b.classList.add(q.t==='多'?'miss':'ok');b.disabled=true;});
   const sb=document.getElementById('sub');if(sb)sb.remove();
-  let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}</div><button class="btn pri" id="nx">下一题</button>`;
-  if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题本':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题本':'加入错题本')}</button>`;}
+  let h=`<div class="res ${ok?'ok':'bad'}">${ok?'正确':(q.t==='判'?'错误，正确答案'+(q.a==='对'?'✓':'✗'):'错误，你的答案'+dispAns(q,sel)+'，正确答案'+dispAns(q))}${revNote?`<small>${esc(revNote)}</small>`:''}</div><button class="btn pri" id="nx">下一题</button>`;
+  if(ok){const s0=S.q[q.id];const inWb=s0&&s0[0]===2&&!s0[1];h+=`<button class="addwb" id="awb"${inWb?' disabled':''}>${inWb?'已加入错题集':(s0&&(s0[0]===3||(s0[0]===2&&s0[1]>0))?'留在错题集':'加入错题集')}</button>`;}
   const mk={};if(q.t!=='判'&&!ok)for(const v of 'ABCDE'){const a=q.a.includes(v),m=sel.includes(v);if(m&&!a)mk[v]='选错';}
   const ex=q.e?fmtExp(q.e,mk,hasOE):'';
   if(ex)h+=`<div class="box"><h4>解析</h4>${ex}</div>`;
   if(q.k||q.kb!=null)h+=`<div class="box book"><h4>原文</h4>${fmtBook(q)}</div>`;
   document.getElementById('after').innerHTML=h;
   document.getElementById('nx').onclick=goNext;
-  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save(true);aw.textContent='已加入错题本';aw.disabled=true;};
+  const aw=document.getElementById('awb');if(aw)aw.onclick=()=>{const s1=S.q[q.id];const now=Date.now();S.q[q.id]=[2,0,today(),((s1&&s1[3])||0)+1,now];save(true);aw.textContent='已加入错题集';aw.disabled=true;};
 }
 // 上一题/下一题：上一题只能回看本次已做的题（显示当时的作答和解析，不能改答案）
 function goPrev(){
@@ -507,7 +638,7 @@ function goNext(){
     const last=sess.answered?H.length-2:H.length-1;
     if(sess.view<last){showHist(sess.view+1);return;}
     sess.view=null;render();
-    if(sess.answered){const h=H[H.length-1];showAfter(Q[h.id],h.sel,h.sel.slice().sort().join('')===Q[h.id].a);}
+    if(sess.answered){const h=H[H.length-1];showAfter(Q[h.id],h.sel,h.sel.slice().sort().join('')===Q[h.id].a,h.revNote);}
     else if(sess.sel.length){document.querySelectorAll('.opt').forEach(b=>b.classList.toggle('sel',sess.sel.includes(b.dataset.v)));const sb=document.getElementById('sub');if(sb)sb.disabled=false;}
     return;
   }
@@ -516,7 +647,7 @@ function goNext(){
 function showHist(i){
   sess.view=i;const h=sess.hist[i];const q=Q[h.id];render(h.id);
   const sb=document.getElementById('sub');if(sb)sb.remove();
-  showAfter(q,h.sel,h.sel.slice().sort().join('')===q.a);
+  showAfter(q,h.sel,h.sel.slice().sort().join('')===q.a,h.revNote);
 }
 (()=>{let x0=null,y0=0,t0=0;
   document.addEventListener('touchstart',e=>{if(e.touches.length!==1){x0=null;return;}x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();},{passive:true});
@@ -524,16 +655,34 @@ function showHist(i){
     if(Date.now()-t0>800||Math.abs(dx)<60||Math.abs(dx)<1.5*Math.abs(dy))return;
     if(dx<0)goNext();else goPrev();},{passive:true});
 })();
-function wrongBook(){
+function wrongBook(keepScroll){
   view={name:'wb'};const app=document.getElementById('app');const ids=wrongList();
-  let h=`<div><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">错题本 ${ids.length} 题${S.sub==='全部'?'':' · '+SUBNAME[S.sub]}</div></div>`;
-  const dn=dueList().length;
-  h+=`<button class="btn pri" id="redo" ${dn?'':'disabled'} style="margin:0 0 12px">${dn?`重刷错题（今天 ${dn} 题）`:ids.length?'今天的错题都刷完了，明天再来':'重刷错题'}</button>`;
-  h+=`<div class="card"><div class="hint" style="margin:0 0 6px">错题列表，按重要性排序。</div>`;
-  h+=ids.map(id=>{const q=Q[id];
-    return `<div class="wb"><span class="tag">${q.y} ${TN[q.t]}</span><div>${esc(q.s)}</div></div>`}).join('')||'<div class="empty">错题本是空的</div>';
-  h+='</div></div>';app.innerHTML=h;document.getElementById('bk').onclick=home;
-  document.getElementById('redo').onclick=()=>startWrong();window.scrollTo(0,0);
+  let h=`<div><div class="top"><button class="back" id="bk">‹ 返回</button><div class="where">错题集 ${ids.length} 题${S.sub==='全部'?'':' · '+SUBNAME[S.sub]}</div></div>`;
+  const dn=dueList(ids).length;
+  h+=`<button class="btn pri" id="redo" ${ids.length?'':'disabled'} style="margin:0 0 12px">${dn?`重刷全部错题（今日待刷 ${dn} 题）`:ids.length?`再练全部错题（共 ${ids.length} 题，今日已刷过）`:'重刷全部错题'}</button>`;
+  if(!ids.length){
+    h+=`<div class="card empty">错题集是空的</div>`;
+  }else{
+    const groups=[];const byU={};
+    ids.forEach(id=>{const u=Q[id].u;if(!byU[u]){byU[u]=[];groups.push(u);}byU[u].push(id);});
+    h+=`<div class="hint" style="margin:0 0 8px">已按${S.sort==='pred'?'「2027 预测比重」':'「22 年历史均分」'}排列各章错题，可按章节单独重刷或重置：</div>`;
+    groups.forEach(ui=>{
+      const u=D[ui],uIds=byU[ui],uDue=dueList(uIds);
+      const redoLabel=uDue.length?`重刷本节错题 (${uDue.length})`:`再练本节错题 (${uIds.length})`;
+      h+=`<div class="card"><div class="wb-head"><div class="wb-info"><div class="wb-title"><span class="tag">${SUBNAME[u.sub]||u.sub}</span><span>${esc(u.name)}</span></div><div class="wb-sub">共 ${uIds.length} 道错题 · 今日待刷 ${uDue.length} 题</div></div><div class="wb-acts"><button class="smbtn pri" data-wru="${ui}">${redoLabel}</button><button class="smbtn" data-rdu="${ui}">重刷全章</button><button class="smbtn warn" data-clrw="${ui}">清空错题</button></div></div><div class="wb-list">`;
+      h+=uIds.map(id=>{const q=Q[id],s=S.q[id];
+        return `<div class="wb"><span class="tag">${q.y} ${TN[q.t]}</span><span class="tag rev">错${s[3]||1}次${s[1]?' · 已连对1次':''}</span><div>${esc(q.s)}</div></div>`;
+      }).join('');
+      h+=`</div></div>`;
+    });
+  }
+  h+='</div>';app.innerHTML=h;
+  document.getElementById('bk').onclick=home;
+  document.getElementById('redo').onclick=()=>startWrong(dn===0,'wb');
+  app.querySelectorAll('[data-wru]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.wru;const uw=unitWrongIds(ui),ud=dueList(uw);startUnitWrong(ui,ud.length===0,'wb');});
+  app.querySelectorAll('[data-rdu]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.rdu;redoCurrentChapter(D[ui],'wb');});
+  app.querySelectorAll('[data-clrw]').forEach(b=>b.onclick=()=>{const ui=+b.dataset.clrw;clearUnitWrong(D[ui]);});
+  if(keepScroll!==true)window.scrollTo(0,0);
 }
 // 键盘不参与做题：没有快捷键，回车/空格也不会触发按钮（防误触），只能点
 document.addEventListener('keydown',e=>{

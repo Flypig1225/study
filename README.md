@@ -4,10 +4,12 @@
 
 ## 👉 开始刷题
 
-- **门户首页**：打开 `index.html`（或 GitHub Pages 首页 **<https://flypig1225.github.io/study/>**）可一键选择基础课 / 综合课 / 宪法导图。
-- **专业基础课（398 · 刑法 / 民法）**：收录 2005–2026 共 **1,099 道客观题**，36 个章节单元 → `quiz.html`（[⬇︎ 下载基础课刷题页](https://github.com/Flypig1225/study/raw/main/quiz.html)）
-- **专业综合课（498 · 法理学 / 宪法学 / 法制史）**：收录 2005–2026 共 **1,270 道客观题**，33 个章节单元，配 54 条权威法条典章卡片与新修法提示 → `quiz_zonghe.html`（[⬇︎ 下载综合课刷题页](https://github.com/Flypig1225/study/raw/main/quiz_zonghe.html)）
-- 两套刷题页均使用独立本地存储与云同步键名（基础课 `fsjc_*` / 综合课 `fszh_*`），互不冲突，支持离线双击打开、错题本按天复习、GitHub Gist 云同步与进度码互传。
+- **网站在线入口**：打开 `index.html`（或 GitHub Pages 首页 **<https://flypig1225.github.io/study/>**）将直接进入 **全科合一版（`quiz_all.html`）**。
+- **全科合一版（398 + 498）**：合并全部 5 门学科共 **2,369 道客观题**、69 个章节单元、215 条权威法条典章卡片 → `quiz_all.html`（[⬇︎ 下载全科合一刷题页](https://github.com/Flypig1225/study/raw/main/quiz_all.html)）。首次打开会自动从浏览器中已有的旧版 `fsjc_v1` / `fszh_v1` 进度迁移合并，同步导出支持 `FSALL1:` 也向下兼容导入单科 `FSJC1:` / `FSZH1:`。
+- **单科离线文件（仅留在仓库中，网站首页不单独展示）**：
+  - `quiz.html`（398 基础课 · 刑法 / 民法，1,099 道客观题，36 个章节单元）
+  - `quiz_zonghe.html`（498 综合课 · 法理学 / 宪法学 / 法制史，1,270 道客观题，33 个章节单元）
+- 三份 HTML 默认均按 **2027 考研（2026-12）预测考频权重** 排序（可一键切换「22 年历史均分」），并在**错题集**（按章节分组）与**刷题页顶部**均为每个章节提供独立的「重刷本节错题 / 重刷全章 / 清空错题」操作；支持离线双击打开、错题按天复习、GitHub Gist 云同步与进度码互传。
 
 下载 → 双击 → 浏览器打开即可。做题进度默认存在浏览器本地；如需电脑与手机同步，可在页面底部「跨设备同步」配置 GitHub Gist 云同步或使用同步码/文件互传合并。
 
@@ -19,8 +21,8 @@
 
 ### 方式三：第三方直链渲染（不想开 Pages 时）
 
-- <https://raw.githack.com/Flypig1225/study/main/quiz.html>
-- <https://htmlpreview.github.io/?https://github.com/Flypig1225/study/blob/main/quiz.html>
+- <https://raw.githack.com/Flypig1225/study/main/quiz_all.html>
+- <https://htmlpreview.github.io/?https://github.com/Flypig1225/study/blob/main/quiz_all.html>
 
 ## 做了什么
 
@@ -60,10 +62,14 @@ tools/
   classify.py            板块打标 + 统计
   recurrence.py          考点复现率检验（考点 × 年份矩阵）
   parse_answers.py       解析 PDF → data/answers.json（多版式正则 + 人工补录合并）
-  build_quiz.py          tagged.json + answers.json → 刷题/法硕基础课-真题刷题.html
+  build_quiz.py          tagged.json + answers_remake.json → quiz.html（398 单科）
+  zh_build_quiz.py       data/zonghe/* → quiz_zonghe.html（498 单科）
+  predict_2027.py        69 单元 2027 考研预测权重与热点标注模型（近5年+近9年+全期+修法/轮空信号）
+  build_all_quiz.py      合并 398 + 498 为单文件全科刷题页 → quiz_all.html
 刷题/
-  _shell.html            刷题页外壳（模板骨架，含全部 JS/CSS，去掉科目专属数据）
-  法硕基础课-真题刷题.html  构建产物（需 data/answers.json 才能生成）
+  _shell.html            398 单科刷题页模板
+  _shell_zonghe.html     498 单科刷题页模板
+  _shell_all.html        398 + 498 全科合一刷题页模板
 ```
 
 ## 一分钟上手
