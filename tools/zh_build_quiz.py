@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""将清洗分类后的 1,270 道 498 客观题 + answers_remake.json + kb.json 生成单文件刷题页 quiz_zonghe.html。
+
+用法：
+    python3 tools/zh_build_quiz.py
+"""
+import json
+import os
+import re
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ZONGHE = os.path.join(ROOT, "data", "zonghe")
+SHELL = os.path.join(ROOT, "刷题", "_shell_zonghe.html")
+OUT = os.path.join(ROOT, "quiz_zonghe.html")
+
+TAGGED_PATH = os.path.join(ZONGHE, "tagged.json")
+ANSWERS = os.path.join(ZONGHE, "answers.json")
+MANUAL = os.path.join(ZONGHE, "answers_manual.json")
+REMAKE = os.path.join(ZONGHE, "answers_remake.json")
+KB_PATH = os.path.join(ZONGHE, "kb.json")
+
+TCODE = {"单项选择": "单", "多项选择": "多", "判断题": "判"}
+REFL_JS = re.compile(r"(^|[^A-Za-z0-9])[A-E]([、，,和与及 ]|项|的|对|错|$)")
+
+
+def norm_answer(raw):
+    s = re.sub(r"[^A-Da-d]", "", str(raw or ""))
+    return "".join(sorted({c.upper() for c in s}))
+
+
+def check_no_shuf(exp):
+    for line in str(exp or "").split("\n"):
+        if not re.match(r"^\s*[A-E][✓✗]", line):
+            clean_line = line.replace("\x01", "").replace("\x02", "")
+            if REFL_JS.search(clean_line):
+                return clean_line
+    return None
+
+
+def build_data():
+    questions = json.load(open(TAGGED_PATH, encoding="utf-8"))
+
+    answers = {}
+    if os.path.exists(ANSWERS):
+        raw_ans = json.load(open(ANSWERS, encoding="utf-8"))
+        for k, v in raw_ans.items():
+            if not k.startswith("_"):
+                answers[k] = dict(v)
+    if os.path.exists(MANUAL):
+        raw_man = json.load(open(MANUAL, encoding="utf-8"))
+        for k, v in raw_man.items():
+            if not k.startswith("_") and isinstance(v, dict) and v.get("a"):
+                answers[k] = dict(answers.get(k, {}), **v)
+
+    remake = json.load(open(REMAKE, encoding="utf-8"))
+    kb = json.load(open(KB_PATH, encoding="utf-8"))
+
+    missing_ans = []
+    missing_remake = []
+    units = {}
+
+    for q in questions:
+        if q["type"] not in ("单项选择", "多项选择"):
+            continue
+        qid = f"{q['year']}-{q['num']}"
+        ans = answers.get(qid) or {}
+        a = norm_answer(ans.get("a"))
+        if not a:
+            missing_ans.append(qid)
+            continue
+
+        rm = remake.get(qid)
+        if not rm or not rm.get("e"):
+            missing_remake.append(qid)
+            continue
+
+        e_text = rm["e"]
+        kb_idx = rm.get("kb")
+        kh_spans = rm.get("kh") or []
+        if kb_idx is not None:
+            if not (0 <= kb_idx < len(kb)):
+                raise ValueError(f"{qid}: kb index {kb_idx} out of range (len={len(kb)})")
+            klen = len(kb[kb_idx])
+            for s_i, e_i in kh_spans:
+                if not (0 <= s_i < e_i <= klen):
+                    raise ValueError(f"{qid}: kh span [{s_i},{e_i}] out of range for KB[{kb_idx}] len={klen}")
+
+        if e_text.count("\x01") != e_text.count("\x02"):
+            raise ValueError(f"{qid}: mismatched \\x01/\\x02 bold markers in explanation")
+
+        bad_refl = check_no_shuf(e_text)
+        if bad_refl:
+            raise ValueError(f"{qid}: explanation triggers REFL noShuf: {bad_refl!r}")
+
+        unit = units.setdefault((q["subject"], q["node"]), {
+            "sub": q["subject"],
+            "name": q["node"],
+            "score": 0,
+            "qs": [],
+        })
+        unit["score"] += q["score"]
+
+        item = {
+            "id": qid,
+            "y": q["year"],
+            "t": TCODE[q["type"]],
+            "s": q["stem"],
+            "o": [q["options"][k] for k in "ABCD"],
+            "a": a,
+            "e": e_text,
+            "k": "",
+        }
+        if kb_idx is not None:
+            item["kb"] = kb_idx
+            item["kh"] = kh_spans
+        unit["qs"].append(item)
+
+    if missing_ans:
+        raise RuntimeError(f"Missing answer keys for {len(missing_ans)} questions: {missing_ans[:10]}")
+    if missing_remake:
+        raise RuntimeError(f"Missing remade explanations for {len(missing_remake)} questions: {missing_remake[:10]}")
+
+    data = []
+    sub_order = {"法理学": 0, "中国宪法学": 1, "中国法制史": 2}
+    for (subj, node), u in units.items():
+        u["qs"].sort(key=lambda x: (x["y"], int(x["id"].split("-")[1])))
+        data.append({
+            "sub": subj,
+            "name": node,
+            "w": round(u["score"] / 22.0, 1),
+            "L": len(u["qs"]),
+            "qs": u["qs"],
+        })
+    data.sort(key=lambda u: (-u["w"], -u["L"], sub_order.get(u["sub"], 9), u["name"]))
+    return data, kb
+
+
+def main():
+    data, kb = build_data()
+
+    shell = open(SHELL, encoding="utf-8").read()
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    kb_payload = json.dumps(kb, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+    html = shell.replace("/*__QUIZ_DATA__*/", payload).replace("/*__KB_DATA__*/", kb_payload)
+
+    nq = sum(len(u["qs"]) for u in data)
+    covered = sorted({q["y"] for u in data for q in u["qs"]})
+    note = f"当前收录 {nq} 道客观真题（{covered[0]}–{covered[-1]}年，共 {len(data)} 个章节单元）。"
+    html = html.replace("__COVERAGE__", note)
+
+    with open(OUT, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"章节 {len(data)} 个，题目 {nq} 道，KB {len(kb)} 条 -> {os.path.relpath(OUT, ROOT)} ({len(html)/1024/1024:.2f} MB)")
+
+
+if __name__ == "__main__":
+    main()
