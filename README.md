@@ -37,26 +37,22 @@
 
 ## 👉 图解讲义（宪法 · 立法法）
 
-对着「法律硕士考试背诵一本通 · 宪法学」第三、四章那两页表格做的说明版：
-
-| 文件 | 用途 |
-|---|---|
-| **[legislation.html](legislation.html)** | 图解版，手机／电脑直接看（12 页图片懒加载） |
-| **[legislation-text.html](legislation-text.html)** | 纯文字版，不依赖图片，图片加载不出来时看这个 |
-| **[legislation-guide.pdf](legislation-guide.pdf)** | 12 页 A4 PDF，适合打印 / iPad 批注（约 260 KB） |
+对着「法律硕士考试背诵一本通 · 宪法学」第三、四章那两页表格做的说明版，
+**单一文件：[legislation-guide.pdf](legislation-guide.pdf)**（12 页 A4，约 240 KB，适合打印 / iPad 批注）。
 
 讲义的顺序：① 分清「人大线 / 政府线」→ ② 位阶金字塔（顺带纠正「部门规章最大」的误解）→ ③ 批准「当自己」→ ④ 备案「找上级」→ ⑤ 审查 22 / 11 / 21 → ⑥ 书上那张表逐行拆解 → ⑦ 关系×位阶矩阵 → ⑧ 总思维导图＋考前速查。
-
-> 文件名统一用 ASCII（`legislation-*`），避免中文文件名在部分浏览器、微信内置浏览器、GitHub Pages 直链里因转义而打不开。
 
 重新生成：
 
 ```bash
-pip install --break-system-packages reportlab fonttools pymupdf
+pip install --break-system-packages reportlab fonttools pymupdf pikepdf
 bash tools/guide/fetch_fonts.sh /tmp/fonts          # 思源黑体（Noto Sans SC）400/500/700
 python3 tools/guide/build.py --font-dir /tmp/fonts -o legislation-guide.pdf
-python3 tools/guide/make_html.py legislation-guide.pdf -o legislation.html
 ```
+
+> 本地预览 PDF 请用 `python3 tools/serve.py 8090 .`。
+> 标准库的 `python -m http.server` 是 HTTP/1.0 且不支持 Range，
+> 手机浏览器和 Chrome 内置 PDF 阅读器会一直卡在白屏——这不是 PDF 坏了。
 
 ## 目录
 
@@ -87,12 +83,13 @@ tools/
   recurrence.py          考点复现率检验（考点 × 年份矩阵）
   parse_answers.py       解析 PDF → data/answers.json（多版式正则 + 人工补录合并）
   build_quiz.py          tagged.json + answers.json → 刷题/法硕基础课-真题刷题.html
+  serve.py               支持 Range 的静态服务器（本地预览 PDF 用）
   guide/                 宪法学图解讲义（reportlab 排版）
     build.py             → legislation-guide.pdf
     guide_base.py        版式工具层（折行/避头点/表格/卡片）
     pages_a.py           12 页内容
     fetch_fonts.sh       下载并拆分思源黑体字重
-    make_html.py         PDF → 手机友好的单文件 HTML
+
 刷题/
   _shell.html            刷题页外壳（模板骨架，含全部 JS/CSS，去掉科目专属数据）
   法硕基础课-真题刷题.html  构建产物（需 data/answers.json 才能生成）
