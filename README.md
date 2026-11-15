@@ -33,6 +33,28 @@
 - **2027 押题**（考试日 2026-12-19），含打分模型、S/A/B 分档、回避清单、5 周冲刺排期
 - **章节比重拆分**（客观题 / 主观题分开排序）+ 考点复现率检验（"考过还会不会再考"）
 - **单文件刷题页**（`刷题/法硕基础课-真题刷题.html`）：1100 道客观题按刑法/民法章节分组，章节进度、顺序/随机、判分、错题本按天复习、重置、历史统计，纯本地无联网
+- **宪法学图解讲义**（`立法位阶-批准-备案-审查-图解讲义.pdf`，12 页）：把「立法位阶 / 批准 / 备案 / 事后审查」两页书拆成四张图 —— 位阶金字塔、批准流程图、备案思维导图、关系×位阶矩阵，附口诀与自测
+
+## 👉 图解讲义（宪法 · 立法法）
+
+对着「法律硕士考试背诵一本通 · 宪法学」第三、四章那两页表格做的说明版：
+
+| 文件 | 用途 |
+|---|---|
+| **[立法位阶-批准-备案-审查-图解讲义.pdf](立法位阶-批准-备案-审查-图解讲义.pdf)** | 12 页 A4，适合打印 / iPad 批注 |
+| **[图解讲义.html](图解讲义.html)** | 手机直接看，可滚动、可打印 |
+
+讲义的顺序：① 分清「人大线 / 政府线」→ ② 位阶金字塔（顺带纠正「部门规章最大」的误解）→ ③ 批准「当自己」→ ④ 备案「找上级」→ ⑤ 审查 22 / 11 / 21 → ⑥ 书上那张表逐行拆解 → ⑦ 关系×位阶矩阵 → ⑧ 总思维导图＋考前速查。
+
+重新生成：
+
+```bash
+pip install --break-system-packages reportlab fonttools
+bash tools/guide/fetch_fonts.sh /tmp/fonts          # 思源黑体（Noto Sans SC）400/500/700
+python3 tools/guide/build.py --font-dir /tmp/fonts -o 立法位阶-批准-备案-审查-图解讲义.pdf
+pip install --break-system-packages pymupdf
+python3 tools/guide/make_html.py 立法位阶-批准-备案-审查-图解讲义.pdf -o 图解讲义.html
+```
 
 ## 目录
 
@@ -63,6 +85,12 @@ tools/
   recurrence.py          考点复现率检验（考点 × 年份矩阵）
   parse_answers.py       解析 PDF → data/answers.json（多版式正则 + 人工补录合并）
   build_quiz.py          tagged.json + answers.json → 刷题/法硕基础课-真题刷题.html
+  guide/                 宪法学图解讲义（reportlab 排版）
+    build.py             → 立法位阶-批准-备案-审查-图解讲义.pdf
+    guide_base.py        版式工具层（折行/避头点/表格/卡片）
+    pages_a.py           12 页内容
+    fetch_fonts.sh       下载并拆分思源黑体字重
+    make_html.py         PDF → 手机友好的单文件 HTML
 刷题/
   _shell.html            刷题页外壳（模板骨架，含全部 JS/CSS，去掉科目专属数据）
   法硕基础课-真题刷题.html  构建产物（需 data/answers.json 才能生成）
