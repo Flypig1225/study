@@ -20,6 +20,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 ROOT = os.path.abspath(".")
 PORT = 8080
+# 根路径 "/" 直接返回这个文件（默认就返回讲义 PDF，而不是 index.html）
+DEFAULT = "legislation-guide.pdf"
 
 MIME = {
     ".pdf": "application/pdf",
@@ -52,6 +54,10 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?", 1)[0].split("#", 1)[0]
         from urllib.parse import unquote
         path = unquote(path)
+        if path in ("", "/"):
+            cand = os.path.abspath(os.path.join(ROOT, DEFAULT))
+            if os.path.isfile(cand):
+                return cand
         if path.endswith("/"):
             path += "index.html"
         full = os.path.abspath(os.path.join(ROOT, path.lstrip("/")))
@@ -60,6 +66,10 @@ class Handler(BaseHTTPRequestHandler):
         return full if os.path.isfile(full) else None
 
     def _headers(self, code, length, ctype, extra=None, last_modified=None):
+        extra = list(extra or [])
+        if ctype == "application/pdf":
+            extra.append(("Content-Disposition", 'inline; filename="legislation-guide.pdf"'))
+            extra.append(("X-Content-Type-Options", "nosniff"))
         self.send_response(code)
         self.send_header("Content-Type", ctype)
         self.send_header("Content-Length", str(length))
@@ -127,11 +137,15 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    global ROOT, PORT
-    if len(sys.argv) > 1:
-        PORT = int(sys.argv[1])
-    if len(sys.argv) > 2:
-        ROOT = os.path.abspath(sys.argv[2])
+    global ROOT, PORT, DEFAULT
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    for a in sys.argv[1:]:
+        if a.startswith("--default="):
+            DEFAULT = a.split("=", 1)[1]
+    if args:
+        PORT = int(args[0])
+    if len(args) > 1:
+        ROOT = os.path.abspath(args[1])
     srv = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
     print("serving %s on http://0.0.0.0:%d (HTTP/1.1, Range enabled)" % (ROOT, PORT))
     srv.serve_forever()
