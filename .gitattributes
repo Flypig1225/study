@@ -1,0 +1,2 @@
+# Keep exam PDFs as binary assets in Git diffs and checkouts.
+*.pdf binary
