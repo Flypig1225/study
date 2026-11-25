@@ -206,6 +206,10 @@ def score_cand(c, slot, Y, hist, cfg):
         else:
             if lys > 2004 and (Y - 1) - lys <= 3: s *= 0.6
             elif lys == 2004: s += 0.3
+    if cfg.get('w_cross'):  # 跨型频率：同科其他题型出现年份数占比（"原理迁移"信号，源自第二次预测吸收实验）
+        yrs = {q['year'] for q in hist if q['subject'] == subj and q['node'] == node
+               and q['type'] not in types}
+        s += cfg['w_cross'] * min(len(yrs) / max(Y - 2005, 1), 1.0)
     if c.get('contrast') and contrast_streak(hist, subj, Y) >= cfg['contrast_need']:
         s += cfg['w_contrast']
     curve = cfg.get('newlaw_curve_by_subj', {}).get(subj, cfg['newlaw_curve'])
@@ -348,7 +352,7 @@ def base_cfg(**kw):
              cap=4.0, jd52_zongze=0.75, rencai_boost=1.1, newlaw_fam_scale={}, art_used_mild=0.75, hot_cycle_boost=0.6, ls58_share=False,
              ft_node_mild=0.8, ft_bian_rule=False, dynasty_rule=False,
              recycle_materials=0.0, lunshu_rotate=False, poLing_rule=False, ft_fresh_bonus=0.4,
-             gap_dual=False, dynasty_mother=0.0,
+             gap_dual=False, dynasty_mother=0.0, w_cross=0.3,
              ls58_rotation=False, ls58_boost=0.5, ls58_streak_need=3, ls58_min_share=0.2)
     c.update(kw); return c
 
@@ -390,8 +394,11 @@ def mine_cfgs():
     cfgs[2026] = V4
     return cfgs
 
+# V5.2 = V0–V4 全链统一吸收"跨型频率"信号（w_cross=0.3，源自《第二次预测》吸收实验，
+# 敏感性 0.2–0.5 平台稳定；逐年无恶化，2022 +1。详见 对比第二次预测.md）
+
 def market_cfgs():
-    mk398 = base_cfg(w_freq=0.35, w_allfreq=1.15,
+    mk398 = base_cfg(w_cross=0.0, w_freq=0.35, w_allfreq=1.15,
                      gap_curve=[(7, 1.0), (6, 0.85), (5, 0.6), (4, 0.35), (3, 0.15)],
                      pen_cand_last=0.3, pen_cand_2=0.8, pen_cand_last_by_fam={'案例': 0.6},
                      node_last_delta=+0.25, node_last2_delta=+0.1,
@@ -410,7 +417,7 @@ NOTES = {
     2023: 'v1：398新法峰值移至age2-3；民法换点连考+0.2；材料3-5年回归；史料朝代轮转；#58轮转+0.25',
     2024: 'v2：题族感知频次；论述主题轮换R1；材料母机制R2；史简答破零R3；案例惩罚放宽',
     2025: 'v3：对比题倾向加强；民法法条编走廊（总则/物权 5/5）',
-    2026: 'v4：冻结参数，稳定性检验',
+    2026: 'v4：冻结参数（+全链跨型信号 w_cross=0.3 吸收版）',
 }
 
 def run(model='mine', verbose=True, detail=None):
@@ -434,6 +441,95 @@ def run(model='mine', verbose=True, detail=None):
                 print(f"  {m1}{m2} [{r['slot']:8s}] 实际={r['actual'][:18]:18s}({r['node'][:12]}) | 押:{r['top1'][:26]}({r['top1_node'][:10]})")
     return rows_all
 
+
+
+# ---------------- 第二次预测模型（按其公开公式，在我的板块口径下复现） ----------------
+# 公式：2.5×近5年槽位内频率占比 + 0.8×跨型频率(同科其他题型出现年份数占比)
+#     + 0.7×轮空年数(封顶8,归一) + 0.8×7-13年周期回归 + 新法信号(398 T+2~4弱 / 498 T+1~2强)
+#     + 0.6×上年同板块连考惯性 − 法制史朝代连考切出惩罚
+
+def second_score_nodes(slot, Y, hist):
+    subj0 = SLOT_SUBJ.get(slot)
+    fam = FAMILY[slot]
+    types = FAM_TYPES[fam]
+    if slot == 'LS58':
+        cands = [c for c in CATALOG if 'XF-LS58' in c['slots'] or 'SH-LS58' in c['slots']]
+    else:
+        cands = [c for c in CATALOG if SLOT_BASE[slot] in c['slots']]
+    groups = {}
+    for c in cands:
+        groups.setdefault((c['subj'], c['node']), []).append(c)
+    scored = []
+    span = max(Y - 2005, 1)
+    is498 = subj0 in ('法理学', '中国宪法学', '中国法制史') or slot in (
+        'L-JD51', 'XF-JD52', 'S-JD53', 'L-FX54', 'XF-FX55', 'S-FX56', 'L-LS57', 'LS58')
+    for (sj, node), cs in groups.items():
+        s = 0.0
+        n5 = freq_t(hist, sj, node, Y, types, win=5)
+        s += 2.5 * (n5 / 5.0)
+        yrs = {q['year'] for q in hist if q['subject'] == sj and q['node'] == node
+               and q['type'] not in types}
+        s += 0.8 * min(len(yrs) / span, 1.0)
+        gap = (Y - 1) - node_last_year(hist, sj, node)
+        s += 0.7 * min(max(gap, 0), 8) / 8.0
+        if 7 <= gap <= 13: s += 0.8
+        ev_best = 0.0
+        for c in cs:
+            for ev in c.get('events', []) or []:
+                age = (Y - 1) - EVENTS[ev][1]
+                if age < 0: continue
+                if is498 and age in (1, 2): ev_best = max(ev_best, 0.8)
+                elif not is498 and age in (2, 3, 4): ev_best = max(ev_best, 0.4)
+        s += ev_best
+        if freq_t(hist, sj, node, Y - 1, types, win=1): s += 0.6
+        if slot == 'S-FX56':
+            d1 = [q['node'] for q in hist if q['subject'] == '中国法制史'
+                  and q['type'] == '分析' and q['year'] == Y - 1]
+            if node in d1: s -= 1.0
+        scored.append((round(s, 3), sj, node, cs))
+    scored.sort(key=lambda x: (-x[0], x[2]))
+    return scored
+
+def predict_second_year(Y):
+    hist = [q for q in ALL if q['year'] < Y]
+    preds = {}
+    for slot in SLOTS_398 + SLOTS_498:
+        preds[slot] = second_score_nodes(slot, Y, hist)
+    return preds
+
+def evaluate_second(Y, preds):
+    acts = actual_for_year(Y)
+    rows = []
+    for slot, act in acts.items():
+        ranked = preds.get(slot, [])
+        top_nodes = [nd for _, _, nd, _ in ranked[:4]]
+        cs_top1 = ranked[0][3] if ranked else []
+        cs_top4 = [c for _, _, _, cs in ranked[:4] for c in cs]
+        rows.append({'slot': slot, 'year': Y,
+                     'actual': act.get('hit', ''), 'node': act['node'],
+                     'top1': ranked[0][2] if ranked else '',
+                     'top1_subj': ranked[0][1] if ranked else '',
+                     'topn': top_nodes,
+                     'top1_cs': cs_top1, 'top4_cs': cs_top4,
+                     'L2': bool(ranked) and ranked[0][2] == act['node'],
+                     'L2_3': act['node'] in top_nodes[:3],
+                     'L2_4': act['node'] in top_nodes,
+                     'L1n': bool(cs_top1) and any(cand_matches_q(c, act) for c in cs_top1),
+                     'L1n_4': any(cand_matches_q(c, act) for c in cs_top4)})
+    return rows
+
+def summarize_second(rows):
+    t = len(rows)
+    return dict(name='second-pred', total=t,
+                L2_1=sum(r['L2'] for r in rows), L2_3=sum(r['L2_3'] for r in rows),
+                L2_4=sum(r['L2_4'] for r in rows),
+                L1n_1=sum(r['L1n'] for r in rows), L1n_4=sum(r['L1n_4'] for r in rows),
+                p=dict(L2_1=round(100*sum(r['L2'] for r in rows)/t,1),
+                       L2_3=round(100*sum(r['L2_3'] for r in rows)/t,1),
+                       L2_4=round(100*sum(r['L2_4'] for r in rows)/t,1),
+                       L1n_1=round(100*sum(r['L1n'] for r in rows)/t,1),
+                       L1n_4=round(100*sum(r['L1n_4'] for r in rows)/t,1)))
+
 if __name__ == '__main__':
     mode = sys.argv[1] if len(sys.argv) > 1 else 'all'
     detail = int(sys.argv[2]) if len(sys.argv) > 2 else None
@@ -444,3 +540,18 @@ if __name__ == '__main__':
         if mode in ('market', 'all'):
             rows = run('market', detail=detail)
             print(json.dumps(summarize(rows, 'market-fixed'), ensure_ascii=False))
+    if mode == 'second':
+        allr = []
+        for Y in range(2022, 2027):
+            preds = predict_second_year(Y)
+            rows = evaluate_second(Y, preds)
+            allr.extend(rows)
+            sm = summarize_second(rows)
+            print(f"[second] {Y}: L2 {sm['L2_1']}/16 (top3 {sm['L2_3']}, top4 {sm['L2_4']}) | L1n {sm['L1n_1']}/16 (top4 {sm['L1n_4']})")
+        if detail:
+            for r in allr:
+                if r['year'] != detail: continue
+                m2 = '✓' if r['L2'] else ('○' if r['L2_3'] else ('○4' if r['L2_4'] else '×'))
+                m1 = '✓' if r['L1n'] else ('○' if r['L1n_4'] else '×')
+                print(f"  {m1}{m2} [{r['slot']:8s}] 实际={r['actual'][:16]:16s}({r['node'][:12]}) | 押板块:{r['top1'][:24]}")
+        print(json.dumps(summarize_second(allr), ensure_ascii=False))
