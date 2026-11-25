@@ -20,10 +20,11 @@ def pools(hist):
     def sub_nodes(paper, subj):
         return sorted({r['node'] for r in hist if r['paper']==paper and r['subject']==subj})
     last_fs = max((r['year'] for r in hist if r['paper']=='498' and r['subject']=='中国法制史' and r['type']=='论述'), default=0)
+    Yp = max(r['year'] for r in hist) + 1   # hist 只含 <Y 年, 故 Y = max+1
     return dict(xz=xz, xf=xf, m=m,
                 fj=sub_nodes('498','法理学'), xf498=sub_nodes('498','中国宪法学'),
                 fs=sub_nodes('498','中国法制史'),
-                subj58='中国法制史' if (2027-last_fs)==5 else '中国宪法学')
+                subj58='中国法制史' if (Yp-last_fs)==5 else '中国宪法学')
 
 def rank(pool, keyfn, exclude=(), topk=5):
     cand = [n for n in pool if n not in exclude]
@@ -200,36 +201,6 @@ def show(name, res, tot, per_year):
     line = ' | '.join(f'{Y}:{per_year[Y][1]}/{per_year[Y][3]}/{per_year[Y][4]}' for Y in YEARS)
     print(f'{name:<44} Top1 {res[1]:>2}/{tot} ({res[1]/tot:.1%})  Top3 {res[3]:>2}/{tot} ({res[3]/tot:.1%})  Top4 {res[4]:>2}/{tot} ({res[4]/tot:.1%})   [逐年T1/T3/T4 {line}]')
 
-print('== 同一数据/同一槽位池/链式2022-2026, 板块级命中 ==')
-models = {}
-# A 冻结模型
-res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_mine))
-show('A. 本仓库冻结模型(gap1,typ1,hist1,rep-1)', res, tot, py); models['A']=(res,tot,det)
-# B 第二次预测公式(近似复现, 含新法表)
-res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_theirs))
-show('B. 第二次预测公式(近似复现, 含新法)', res, tot, py); models['B']=(res,tot,det)
-# B' 无新法项(新法表不可完全复现, 看纯统计部分)
-def key_theirs_nolaw(sk,n,hist,P):
-    return key_theirs(sk,n,hist,P) - newlaw_signal((P['subj58'] if sk=='xl' else SUBJ_TYPE[sk][0]), n, max(r['year'] for r in hist)+1)
-res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_theirs_nolaw))
-show("B'. 第二次预测公式(不含新法项)", res, tot, py)
-
-# 消融: 冻结模型 + 他们的信号
-for label, kw in [
-    ('C. 冻结+连考改+0.6(替代-1)', dict(repeat_sign=+1)),
-    ('D. 冻结+跨型频率', dict(add_cross=True)),
-    ('E. 冻结+法史朝代切出', dict(add_dynasty=True)),
-    ('F. 冻结+7-13周期回归', dict(add_cycle=True)),
-    ('G. 冻结+新法分科表', dict(add_law=True)),
-    ('H. 冻结+跨型+周期+新法+法史(保留rep=-1)', dict(add_cross=True, add_cycle=True, add_law=True, add_dynasty=True)),
-    ('I. H+连考改+0.6', dict(add_cross=True, add_cycle=True, add_law=True, add_dynasty=True, repeat_sign=+1)),
-]:
-    res, tot, py, det = evaluate(lambda Y, kw=kw: predict_generic(Y, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,**kw)))
-    show(label, res, tot, py)
-
-# 纯验证集 2024-2026 视角 (模型A是22+23调参冻结, B及其衍生未调参但开发时看过全期 — 如实标注)
-print()
-print('== 纯验证年 2024-2026 (仅A有真正的冻结协议; B/衍生开发时用过全期, 标注为in-sample) ==')
 def evaluate_holdout(preds_fn, ks=(1,3,4)):
     res={k:0 for k in ks}; tot=0
     for Y in (2024,2025,2026):
@@ -241,27 +212,6 @@ def evaluate_holdout(preds_fn, ks=(1,3,4)):
                 for k in ks:
                     if a in pl[:k]: res[k]+=1
     return res, tot
-for name, fn in [
-    ('A 冻结模型', lambda Y: predict_generic(Y, key_mine)),
-    ('B 第二次预测(近似)', lambda Y: predict_generic(Y, key_theirs)),
-    ('I 最佳混合', lambda Y: predict_generic(Y, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,add_cross=True,add_cycle=True,add_law=True,add_dynasty=True,repeat_sign=+1))),
-]:
-    r, t = evaluate_holdout(fn)
-    print(f'  {name:<20} Top1 {r[1]}/{t} ({r[1]/t:.1%})  Top3 {r[3]}/{t} ({r[3]/t:.1%})  Top4 {r[4]}/{t} ({r[4]/t:.1%})')
-
-# 保存 B 与 I 的2027 预测供对比
-print()
-print('== 2027 预测对比 (S档Top1) ==')
-pB = predict_generic(2027, key_theirs)
-pI = predict_generic(2027, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,add_cross=True,add_cycle=True,add_law=True,add_dynasty=True,repeat_sign=+1))
-pA = predict_generic(2027, key_mine)
-label = {'xj1':'398#51刑简','xj2':'398#52刑简分','mj1':'398#53民简A','mj2':'398#54民简B',
-         'xt':'398#55刑条','mt':'398#56民条','xa':'398#57刑案','ma':'398#58民案',
-         'fj':'498#51法简','xf':'498#52宪简','fs':'498#53法史简','fx':'498#54法分',
-         'xx':'498#55宪分','xs':'498#56法史分','fl':'498#57法论述','xl':'498#58论'}
-for sk in ['xj1','xj2','mj1','mj2','xt','mt','xa','ma','fj','xf','fs','fx','xx','xs','fl','xl']:
-    print(f'  {label[sk]:<12} A:{pA[sk][0]:<18} B:{pB[sk][0]:<18} I:{pI[sk][0]}')
-
 # ---------- 追加: 大板块级(21方向合并)同口径对比 ----------
 # 按《第二次预测》25天方案的21个方向合并节点; 未列出的节点按科目补入相邻方向(文档化)
 DIRECTION = {}
@@ -319,11 +269,64 @@ def evaluate_direction(preds_fn, ks=(1,4)):
     return res, tot, per_year
 
 print()
-print('== 大板块级(方向合并)同口径: 两模型都用同一张合并表 ==')
-for name, fn in [('A 冻结模型(节点→方向)', lambda Y: predict_generic(Y, key_mine)),
-                 ('B 第二次预测(节点→方向)', lambda Y: predict_generic(Y, key_theirs))]:
-    r, t, py = evaluate_direction(fn)
-    line=' | '.join(f'{Y}:{py[Y][1]}/{py[Y][4]}' for Y in YEARS)
-    p1 = format(r[1]/t, '.1%'); p4 = format(r[4]/t, '.1%')
-    print(f'  {name:<28} 方向Top1 {r[1]:>2}/{t} ({p1})  方向Top4 {r[4]:>2}/{t} ({p4})   [逐年T1/T4 {line}]')
-print('  (第二次预测自报: 方向Top1 42/80=52.5%, 方向Top4 61/80=76.2% — 其合并表未公开, 此处为其Top5节点经本表合并后的下界估计)')
+
+if __name__ == '__main__':
+    print('== 同一数据/同一槽位池/链式2022-2026, 板块级命中 ==')
+    models = {}
+    # A 冻结模型
+    res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_mine))
+    show('A. 本仓库冻结模型(gap1,typ1,hist1,rep-1)', res, tot, py); models['A']=(res,tot,det)
+    # B 第二次预测公式(近似复现, 含新法表)
+    res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_theirs))
+    show('B. 第二次预测公式(近似复现, 含新法)', res, tot, py); models['B']=(res,tot,det)
+    # B' 无新法项(新法表不可完全复现, 看纯统计部分)
+    def key_theirs_nolaw(sk,n,hist,P):
+        return key_theirs(sk,n,hist,P) - newlaw_signal((P['subj58'] if sk=='xl' else SUBJ_TYPE[sk][0]), n, max(r['year'] for r in hist)+1)
+    res, tot, py, det = evaluate(lambda Y: predict_generic(Y, key_theirs_nolaw))
+    show("B'. 第二次预测公式(不含新法项)", res, tot, py)
+
+    # 消融: 冻结模型 + 他们的信号
+    for label, kw in [
+        ('C. 冻结+连考改+0.6(替代-1)', dict(repeat_sign=+1)),
+        ('D. 冻结+跨型频率', dict(add_cross=True)),
+        ('E. 冻结+法史朝代切出', dict(add_dynasty=True)),
+        ('F. 冻结+7-13周期回归', dict(add_cycle=True)),
+        ('G. 冻结+新法分科表', dict(add_law=True)),
+        ('H. 冻结+跨型+周期+新法+法史(保留rep=-1)', dict(add_cross=True, add_cycle=True, add_law=True, add_dynasty=True)),
+        ('I. H+连考改+0.6', dict(add_cross=True, add_cycle=True, add_law=True, add_dynasty=True, repeat_sign=+1)),
+    ]:
+        res, tot, py, det = evaluate(lambda Y, kw=kw: predict_generic(Y, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,**kw)))
+        show(label, res, tot, py)
+
+    # 纯验证集 2024-2026 视角 (模型A是22+23调参冻结, B及其衍生未调参但开发时看过全期 — 如实标注)
+    print()
+    print('== 纯验证年 2024-2026 (仅A有真正的冻结协议; B/衍生开发时用过全期, 标注为in-sample) ==')
+    for name, fn in [
+        ('A 冻结模型', lambda Y: predict_generic(Y, key_mine)),
+        ('B 第二次预测(近似)', lambda Y: predict_generic(Y, key_theirs)),
+        ('I 最佳混合', lambda Y: predict_generic(Y, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,add_cross=True,add_cycle=True,add_law=True,add_dynasty=True,repeat_sign=+1))),
+    ]:
+        r, t = evaluate_holdout(fn)
+        print(f'  {name:<20} Top1 {r[1]}/{t} ({r[1]/t:.1%})  Top3 {r[3]}/{t} ({r[3]/t:.1%})  Top4 {r[4]}/{t} ({r[4]/t:.1%})')
+
+    # 保存 B 与 I 的2027 预测供对比
+    print()
+    print('== 2027 预测对比 (S档Top1) ==')
+    pB = predict_generic(2027, key_theirs)
+    pI = predict_generic(2027, lambda sk,n,hist,P: key_ablation(sk,n,hist,P,add_cross=True,add_cycle=True,add_law=True,add_dynasty=True,repeat_sign=+1))
+    pA = predict_generic(2027, key_mine)
+    label = {'xj1':'398#51刑简','xj2':'398#52刑简分','mj1':'398#53民简A','mj2':'398#54民简B',
+             'xt':'398#55刑条','mt':'398#56民条','xa':'398#57刑案','ma':'398#58民案',
+             'fj':'498#51法简','xf':'498#52宪简','fs':'498#53法史简','fx':'498#54法分',
+             'xx':'498#55宪分','xs':'498#56法史分','fl':'498#57法论述','xl':'498#58论'}
+    for sk in ['xj1','xj2','mj1','mj2','xt','mt','xa','ma','fj','xf','fs','fx','xx','xs','fl','xl']:
+        print(f'  {label[sk]:<12} A:{pA[sk][0]:<18} B:{pB[sk][0]:<18} I:{pI[sk][0]}')
+
+    print('== 大板块级(方向合并)同口径: 两模型都用同一张合并表 ==')
+    for name, fn in [('A 冻结模型(节点→方向)', lambda Y: predict_generic(Y, key_mine)),
+                     ('B 第二次预测(节点→方向)', lambda Y: predict_generic(Y, key_theirs))]:
+        r, t, py = evaluate_direction(fn)
+        line=' | '.join(f'{Y}:{py[Y][1]}/{py[Y][4]}' for Y in YEARS)
+        p1 = format(r[1]/t, '.1%'); p4 = format(r[4]/t, '.1%')
+        print(f'  {name:<28} 方向Top1 {r[1]:>2}/{t} ({p1})  方向Top4 {r[4]:>2}/{t} ({p4})   [逐年T1/T4 {line}]')
+    print('  (第二次预测自报: 方向Top1 42/80=52.5%, 方向Top4 61/80=76.2% — 其合并表未公开, 此处为其Top5节点经本表合并后的下界估计)')
